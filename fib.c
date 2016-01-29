@@ -1,3 +1,8 @@
+/* Charles Gong, Manasa Tipparam
+ * 1/28/16
+ * Recursively computes a Fibonacci number based on the argument n.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
