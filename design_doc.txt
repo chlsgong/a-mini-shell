@@ -1,11 +1,11 @@
 ################
 YOUR INFO
 ################
-Name1:
-EID1:
-CS login:
-Email:
-Unique Number:
+Name1: Charles Gong
+EID1: hcg359
+CS login: hcgong@cs.utexas.edu
+Email: gch_charles@yahoo.com
+Unique Number: 51085
 
 Slip days used:
 

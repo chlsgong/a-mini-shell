@@ -32,7 +32,7 @@ unix_error(char *msg)
 int main(int argc, char **argv)
 {
   int arg;
-  int print;
+  int print = 0; // acts as a bool
 
   if(argc != 2){
     fprintf(stderr, "Usage: fib <num>\n");
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     exit(-1);
   }
 
-  doFib(arg, 1);
+  doFib(arg, print);
 
   return 0;
 }
@@ -63,9 +63,49 @@ int main(int argc, char **argv)
  * doFib() exactly once.
  */
 static void 
-doFib(int n, int doPrint)
+doFib(int n, int doPrint) // 0 is false
 {
-  
+  printf("test\n");
+  pid_t child1, child2, retpid;
+  int status1 = 0, status2 = 0;
+  // if(n == 0)
+  //   return 0;
+  // else if(n == 1)
+  //   return 1;
+  // else {
+  //   return doFib(n-1, doPrint) + doFib(n-2, doPrint);
+  // }
+
+  // Charles and Manasa drove here
+  if(n == 0) {
+     printf("Exit at 0\n");
+    exit(0);
+  }
+  if(n < 3) {
+     printf("Exit at 1/2\n");
+    exit(1);
+
+  }
+
+
+  else {
+    child1 = fork();
+    if(child1 == 0) // child process
+    {
+      printf("child 1 fork\n"); 
+      doFib(n-1, doPrint);
+    }
+    else {
+      child2 = fork();
+      if(child2 == 0) // child process
+        doFib(n-2, doPrint);
+    }
+    if((retpid = waitpid(child1, &status1, 0)) > 0)
+      if(WIFEXITED(status1))
+        if((retpid = waitpid(child2, &status2, 0)) > 0)
+          if(WIFEXITED(status2))
+            printf("%d\n", status1 + status2);
+  }
 }
 
 

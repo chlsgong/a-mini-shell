@@ -1,2 +1,8 @@
 Format: Date, Time, Names, Hours
 		Drive Order, Time Length
+
+Log:	1/29/16; 4:05; Charles, Manasa;
+		Charles, 40 minutes
+		Manasa, 30 min
+		Charles, 30 min
+		Manasa, 30 min
