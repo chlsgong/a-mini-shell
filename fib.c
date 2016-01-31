@@ -65,12 +65,12 @@ int main(int argc, char **argv)
 static void 
 doFib(int n, int doPrint) // 0 is false
 {
-  printf("test\n");
+  printf("n = %d, pid = %d\n", n, getpid());
   pid_t child1, child2, retpid;
-  int status1 = 0, status2 = 0;
+  int status1, status2;
   // if(n == 0)
   //   return 0;
-  // else if(n == 1)
+  // else if(n < 3)
   //   return 1;
   // else {
   //   return doFib(n-1, doPrint) + doFib(n-2, doPrint);
@@ -82,29 +82,36 @@ doFib(int n, int doPrint) // 0 is false
     exit(0);
   }
   if(n < 3) {
-     printf("Exit at 1/2\n");
+     printf("Exit at 1, 2\n");
     exit(1);
-
   }
 
 
   else {
+    printf("child 1 fork, pid = %d\n", getpid());
     child1 = fork();
     if(child1 == 0) // child process
     {
-      printf("child 1 fork\n"); 
+      // printf("Call dofib child1: n = %d\n", n - 1);
       doFib(n-1, doPrint);
     }
     else {
-      child2 = fork();
-      if(child2 == 0) // child process
+      printf("child 2 fork, pid = %d\n", getpid());
+	    child2 = fork();
+      if(child2 == 0){ // child process
+        // rintf("Call dofib child2: n = %d\n", n - 2);
         doFib(n-2, doPrint);
+      }
     }
     if((retpid = waitpid(child1, &status1, 0)) > 0)
       if(WIFEXITED(status1))
         if((retpid = waitpid(child2, &status2, 0)) > 0)
-          if(WIFEXITED(status2))
-            printf("%d\n", status1 + status2);
+          if(WIFEXITED(status2)) {
+            doPrint += (WEXITSTATUS(status1) + WEXITSTATUS(status2));
+            if(getppid() == 1)
+              printf("fib = %d\n", doPrint);
+            exit(doPrint);
+          }
   }
 }
 
