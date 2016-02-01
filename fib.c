@@ -14,7 +14,6 @@
 #include <errno.h>
 
 const int MAX = 13;
-pid_t root;
 
 static void doFib(int n, int doPrint);
 
@@ -33,7 +32,7 @@ unix_error(char *msg)
 int main(int argc, char **argv)
 {
   int arg;
-  int print = 0; // acts as a bool
+  int print; // acts as a bool
 
   if(argc != 2){
     fprintf(stderr, "Usage: fib <num>\n");
@@ -50,8 +49,7 @@ int main(int argc, char **argv)
     exit(-1);
   }
 
-  root = getppid();
-  doFib(arg, print);
+  doFib(arg, 1);
 
   return 0;
 }
@@ -65,46 +63,34 @@ int main(int argc, char **argv)
  * doFib() exactly once.
  */
 static void 
-doFib(int n, int doPrint) // 0 is false
+doFib(int n, int doPrint)
 {
   pid_t child1, child2, retpid;
-  int status1, status2;
-  // if(n == 0)
-  //   return 0;
-  // else if(n < 3)
-  //   return 1;
-  // else {
-  //   return doFib(n-1, doPrint) + doFib(n-2, doPrint);
-  // }
+  int status1, status2, result = 0;
 
   // Charles drove here
-  if(n == 0) {
+  if(n == 0)
     exit(0);
-  }
-  if(n < 3) {
+  if(n < 3)
     exit(1);
-  }
   else {
     child1 = fork();
     if(child1 == 0) // child process
-    {
-      doFib(n-1, doPrint);
-    }
+      doFib(n-1, 0);
     else {
 	    child2 = fork();
-      if(child2 == 0){ // child process
-        doFib(n-2, doPrint);
-      }
+      if(child2 == 0) // child process
+        doFib(n-2, 0);
     }
     // Charles stopped driving, Manasa starts driving
     if((retpid = waitpid(child1, &status1, 0)) > 0)
       if(WIFEXITED(status1))
         if((retpid = waitpid(child2, &status2, 0)) > 0)
           if(WIFEXITED(status2)) {
-            doPrint += (WEXITSTATUS(status1) + WEXITSTATUS(status2));
-            if(getppid() == root)
-              printf("fib = %d\n", doPrint);
-            exit(sum);
+            result += (WEXITSTATUS(status1) + WEXITSTATUS(status2));
+            if(doPrint == 1)
+              printf("fib = %d\n", result);
+            exit(result);
           }
   }
   // Manasa stopped driving

@@ -6,6 +6,7 @@
  * mt32855
  *
  * Charles Gong
+ * hcg359
  * 
  */
 #include <stdio.h>
@@ -109,6 +110,9 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
+    if(strcmp(cmdline, "quit") == 0) {
+        
+    }
     return;
 }
 
