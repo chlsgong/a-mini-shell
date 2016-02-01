@@ -2,6 +2,11 @@
  * psh - A prototype tiny shell program with job control
  * 
  * <Put your name and login ID here>
+ * Manasa Tipparam
+ * mt32855
+ *
+ * Charles Gong
+ * 
  */
 #include <stdio.h>
 #include <stdlib.h>
