@@ -69,10 +69,16 @@ doFib(int n, int doPrint)
   int status1, status2, result = 0;
 
   // Charles drove here
-  if(n == 0)
+  if(n == 0) {
+    if(doPrint == 1)
+      printf("0\n");
     exit(0);
-  if(n < 3)
+  }
+  else if(n == 1) {
+    if(doPrint == 1)
+      printf("1\n");
     exit(1);
+  }
   else {
     child1 = fork();
     if(child1 == 0) // child process
@@ -89,11 +95,9 @@ doFib(int n, int doPrint)
           if(WIFEXITED(status2)) {
             result += (WEXITSTATUS(status1) + WEXITSTATUS(status2));
             if(doPrint == 1)
-              printf("fib = %d\n", result);
+              printf("%d\n", result);
             exit(result);
           }
   }
   // Manasa stopped driving
 }
-
-

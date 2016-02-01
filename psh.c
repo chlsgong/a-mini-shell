@@ -7,7 +7,6 @@
  *
  * Charles Gong
  * hcg359
- * 
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +30,7 @@ static char prompt[] = "psh> ";    /* command line prompt (DO NOT CHANGE) */
 
 
 /* Function prototypes */
+
 
 /* Here are the functions that you will implement */
 void eval(char *cmdline);
@@ -108,10 +108,28 @@ int main(int argc, char **argv)
  * run the job in the context of the child. If the job is running in
  * the foreground, wait for it to terminate and then return. 
 */
-void eval(char *cmdline) 
+void eval(char *cmdline) // page 735, Computer Systems by Bryant O'Hallaron
 {
-    if(strcmp(cmdline, "quit") == 0) {
-        
+    pid_t child;
+    char* argv[MAXARGS];
+    int bg, status;
+
+    bg = parseline(cmdline, argv);
+
+    if(builtin_cmd(argv) == 0) {
+        child = fork();
+        if(child == 0) {
+            if(execve(argv[0], argv, environ) < 0) {
+                printf("Command not found: %s.\n", argv[0]);
+                exit(0);
+            }
+        }
+        else if(bg == 0) {
+            if(waitpid(child, &status, 0) < 0)
+                unix_error("waitfg: waitpid error");
+        }
+        else
+            printf("%d %s", child, cmdline);
     }
     return;
 }
@@ -123,8 +141,14 @@ void eval(char *cmdline)
  * Return 1 if a builtin command was executed; return 0
  * if the argument passed in is *not* a builtin command.
  */
-int builtin_cmd(char **argv) 
-{
+int builtin_cmd(char **argv) // page 735, Computer Systems by Bryant O'Hallaron 
+{   
+    char* quit = "quit";
+    
+    if(strcmp(argv[0], quit) == 0) { // quit command
+        exit(0);
+        return 1;
+    }
     return 0;     /* not a builtin command */
 }
 
@@ -148,7 +172,7 @@ void usage(void)
     exit(1);
 }
 
-/*
+/*  
  * sigquit_handler - The driver program can gracefully terminate the
  *    child shell by sending it a SIGQUIT signal.
  */
