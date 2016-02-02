@@ -14,11 +14,11 @@ Slip days used:
 ################
 YOUR PARTNER'S INFO
 ################
-Name1:
-EID1:
-CS login:
-Email:
-Unique Number:
+Name1: Manasa Tipparam
+EID1: mt32855
+CS login: manasa@cs.utexas.edu
+Email: manasa.tipparam@gmail.com
+Unique Number: 51080
 
 Your partner's ranking (scale below):
 
@@ -75,9 +75,11 @@ Questions regarding Part 1
 (2) What is the last assembly language instruction executed by the
   signal handler function that you write?  (You may choose either signal
   handler.)
+  callq 0x4007a0 <write@plt> for the SIGUSR1 signal
 
 (3) After the instruction identified in the previous question executes, 
   what is the next assembly language instruction executed?
+  pushq $0x3
 
 (4) When the signal handler finishes running, it must restore all of
   the registers from the interrupted thread to exactly their values

@@ -11,13 +11,23 @@
  * Handler for the SIGINT signal
  * prints nice try and then continues looping
  */
-void sigint_handler(int sig) 
+void sig_handler(int sig) 
 {
     ssize_t bytes; 
     const int STDOUT = 1; 
-    bytes = write(STDOUT, "Nice Try.\n", 10); 
-    if(bytes != 10) 
-       exit(-999);
+    if(sig == 10) {
+		bytes = write(STDOUT, "exiting\n", 8);
+		if(bytes != 10) {
+       		exit(-999);
+       	}
+		exit(1);	
+	} else {
+		bytes = write(STDOUT, "Nice Try.\n", 10); 
+    	if(bytes != 10) {
+       		exit(-999);
+       	}
+	}
+    
 }
 
 /*
@@ -36,7 +46,8 @@ int main(int argc, char **argv)
 
 	printf("%d\n", pid);
 	req.tv_sec = 1;
-	signal(SIGINT, sigint_handler);
+	signal(SIGINT, sig_handler);
+	signal(SIGUSR1, sig_handler);
 
 	while(1) {
 		printf("Still here\n");
@@ -44,6 +55,5 @@ int main(int argc, char **argv)
 			nanosleep(&remain, &remain2);
 		}
 	}
-
   	return 0;
 }

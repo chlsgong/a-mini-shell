@@ -185,6 +185,3 @@ void sigquit_handler(int sig)
        exit(-999);
     exit(1);
 }
-
-
-
