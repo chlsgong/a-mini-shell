@@ -46,8 +46,8 @@ int main(int argc, char **argv)
 
 	printf("%d\n", pid);
 	req.tv_sec = 1;
-	signal(SIGINT, sig_handler);
-	signal(SIGUSR1, sig_handler);
+	Signal(SIGINT, sig_handler);
+	Signal(SIGUSR1, sig_handler);
 
 	while(1) {
 		printf("Still here\n");
