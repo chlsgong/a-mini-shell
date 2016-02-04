@@ -124,7 +124,7 @@ void eval(char *cmdline) // page 735, Computer Systems by Bryant O'Hallaron
                 exit(0);
             }
         }
-        else if(bg == 0) { // if not a background job, wait for child process to finish
+        if(bg == 0) { // if not a background job, wait for child process to finish
             if(waitpid(child, &status, 0) < 0)
                 unix_error("waitfg: waitpid error");
         }

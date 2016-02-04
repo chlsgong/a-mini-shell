@@ -2,6 +2,8 @@
  * msh - A mini shell program with job control
  * 
  * <Put your name and login ID here>
+ * Charles Gong
+ * hcg359
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -123,6 +125,27 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
+	pid_t child;
+    char* argv[MAXARGS];
+    int bg, status;
+
+    bg = parseline(cmdline, argv);
+
+    if(builtin_cmd(argv) == 0) {
+        child = fork();
+        if(child == 0) {
+            if(execve(argv[0], argv, environ) < 0) {
+                printf("Command not found: %s.\n", argv[0]);
+                exit(0);
+            }
+        }
+        if(bg == 0) { // if not a background job, wait for child process to finish
+            if(waitpid(child, &status, 0) < 0)
+                unix_error("waitfg: waitpid error");
+        }
+        else
+            printf("%d %s", child, cmdline);
+    }
     return;
 }
 
@@ -135,6 +158,11 @@ void eval(char *cmdline)
  */
 int builtin_cmd(char **argv) 
 {
+	char* quit = "quit";
+    
+    if(strcmp(argv[0], quit) == 0) { // quit command
+        exit(0);
+    }
     return 0;     /* not a builtin command */
 }
 
