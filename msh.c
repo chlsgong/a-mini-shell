@@ -125,14 +125,19 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
+    // printf("CMD: %s\n", cmdline);
 	pid_t child;
     char* argv[MAXARGS];
-    int bg, status;
+    int bg, status, jid;
 
+    if(cmdline[0] == '\n')
+        return;
     bg = parseline(cmdline, argv);
+    initjobs(jobs);
 
-    if(builtin_cmd(argv) == 0) {
+    if(builtin_cmd(argv) == 0) { //not a built in command
         child = fork();
+        // printf("after BG: %d, Child: %d\n", bg, child);
         if(child == 0) {
             if(execve(argv[0], argv, environ) < 0) {
                 printf("Command not found: %s.\n", argv[0]);
@@ -140,11 +145,22 @@ void eval(char *cmdline)
             }
         }
         if(bg == 0) { // if not a background job, wait for child process to finish
+            printf("running in foreground\n");
+            addjob(jobs, child, 1, cmdline);
             if(waitpid(child, &status, 0) < 0)
                 unix_error("waitfg: waitpid error");
+            else {
+                printf("foreground process done\n");
+                deletejob(jobs, child);
+            }
         }
-        else
-            printf("%d %s", child, cmdline);
+        else { // if a background job
+            addjob(jobs, child, 2, cmdline);
+            if(waitpid(child, &status, WNOHANG) == 0) {
+                jid = pid2jid(jobs, child);
+                printf("[%d] (%d) %s", jid, child, cmdline);
+            }
+        }
     }
     return;
 }
@@ -159,7 +175,17 @@ void eval(char *cmdline)
 int builtin_cmd(char **argv) 
 {
 	char* quit = "quit";
-    
+    char* jobsCmd = "jobs";
+    // char* bg = "bg";
+    // char* fg = "fg";
+
+
+    if(strcmp(argv[0], jobsCmd) == 0) // lists jobs
+    {
+        listjobs(jobs);
+        return 1;
+    }
+
     if(strcmp(argv[0], quit) == 0) { // quit command
         exit(0);
     }
