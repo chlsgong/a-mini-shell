@@ -133,7 +133,6 @@ void eval(char *cmdline)
     if(cmdline[0] == '\n')
         return;
     bg = parseline(cmdline, argv);
-    initjobs(jobs);
 
     if(builtin_cmd(argv) == 0) { //not a built in command
         child = fork();
@@ -145,21 +144,19 @@ void eval(char *cmdline)
             }
         }
         if(bg == 0) { // if not a background job, wait for child process to finish
-            printf("running in foreground\n");
-            addjob(jobs, child, 1, cmdline);
+            // printf("running in foreground\n");
+            addjob(jobs, child, FG, cmdline);
             if(waitpid(child, &status, 0) < 0)
                 unix_error("waitfg: waitpid error");
             else {
-                printf("foreground process done\n");
+                // printf("foreground process done\n");
                 deletejob(jobs, child);
             }
         }
         else { // if a background job
-            addjob(jobs, child, 2, cmdline);
-            if(waitpid(child, &status, WNOHANG) == 0) {
-                jid = pid2jid(jobs, child);
-                printf("[%d] (%d) %s", jid, child, cmdline);
-            }
+            addjob(jobs, child, BG, cmdline);
+            jid = pid2jid(jobs, child);
+            printf("[%d] (%d) %s", jid, child, cmdline);
         }
     }
     return;
