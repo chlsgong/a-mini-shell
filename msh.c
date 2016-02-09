@@ -125,38 +125,44 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
-    // printf("CMD: %s\n", cmdline);
+    // printf("CMD: %s", cmdline);
 	pid_t child;
+    sigset_t mask;
     char* argv[MAXARGS];
-    int bg, status, jid;
+    int bg, jid, builtin;
+
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGCHLD);
+    sigprocmask(SIG_BLOCK, &mask, NULL);
 
     if(cmdline[0] == '\n')
         return;
-    bg = parseline(cmdline, argv);
 
-    if(builtin_cmd(argv) == 0) { //not a built in command
+    bg = parseline(cmdline, argv);
+    builtin = builtin_cmd(argv);
+    if(builtin)
+        sigprocmask(SIG_UNBLOCK, &mask, NULL);
+    else { // not a built in command
         child = fork();
-        // printf("after BG: %d, Child: %d\n", bg, child);
-        if(child == 0) {
+        // printf("BG: %d, Child: %d\n", bg, child);
+        if(child == 0) { // child process
+            sigprocmask(SIG_UNBLOCK, &mask, NULL);
             if(execve(argv[0], argv, environ) < 0) {
                 printf("Command not found: %s.\n", argv[0]);
                 exit(0);
             }
         }
-        if(bg == 0) { // if not a background job, wait for child process to finish
-            // printf("running in foreground\n");
+        // parent process
+        if(bg == 0) { // if a foreground job, wait for child process to finish
             addjob(jobs, child, FG, cmdline);
-            if(waitpid(child, &status, 0) < 0)
-                unix_error("waitfg: waitpid error");
-            else {
-                // printf("foreground process done\n");
-                deletejob(jobs, child);
-            }
+            sigprocmask(SIG_UNBLOCK, &mask, NULL);
+            waitfg(child);
         }
         else { // if a background job
             addjob(jobs, child, BG, cmdline);
-            jid = pid2jid(jobs, child);
+            jid = pid2jid(jobs, child); // get job from pid then prints it
             printf("[%d] (%d) %s", jid, child, cmdline);
+            sigprocmask(SIG_UNBLOCK, &mask, NULL);
         }
     }
     return;
@@ -176,13 +182,10 @@ int builtin_cmd(char **argv)
     // char* bg = "bg";
     // char* fg = "fg";
 
-
-    if(strcmp(argv[0], jobsCmd) == 0) // lists jobs
-    {
+    if(strcmp(argv[0], jobsCmd) == 0) { // lists jobs
         listjobs(jobs);
         return 1;
     }
-
     if(strcmp(argv[0], quit) == 0) { // quit command
         exit(0);
     }
@@ -201,7 +204,17 @@ void do_bgfg(char **argv)
  * waitfg - Block until process pid is no longer the foreground process
  */
 void waitfg(pid_t pid)
-{
+{   
+    sigset_t waitMask;
+    sigemptyset(&waitMask);
+    sigaddset(&waitMask, SIGCHLD);
+    sigprocmask(SIG_BLOCK, &waitMask, NULL);
+
+    while(fgpid(jobs) == pid) {
+        sigdelset(&waitMask, SIGCHLD);
+        sigsuspend(&waitMask);
+        sigaddset(&waitMask, SIGCHLD);
+    }
     return;
 }
 
@@ -217,7 +230,20 @@ void waitfg(pid_t pid)
  *     currently running children to terminate.  
  */
 void sigchld_handler(int sig) 
-{
+{   
+    pid_t pid;
+    errno = 0;
+
+    while((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) {
+        deletejob(jobs, pid);
+    }
+    if(errno == EINTR) {
+        if((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) {
+            deletejob(jobs, pid);
+        }
+    }
+    else if(errno != ECHILD && pid != 0)
+        unix_error("waitpid error");
     return;
 }
 
