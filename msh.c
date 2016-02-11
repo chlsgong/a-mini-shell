@@ -125,7 +125,6 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
-    // printf("CMD: %s", cmdline);
 	pid_t child;
     sigset_t mask;
     char* argv[MAXARGS];
@@ -149,7 +148,7 @@ void eval(char *cmdline)
             setpgid(0, 0);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             if(execve(argv[0], argv, environ) < 0) {
-                fprintf(stderr, "Command not found: %s\n", argv[0]);
+                fprintf(stderr, "%s: Command not found\n", argv[0]);
                 exit(0);
             }
         }
@@ -213,7 +212,7 @@ void do_bgfg(char **argv)
     int count = 0, byte, jid;
 
     if(!argv[1]) { // get jid or pid
-        fprintf(stderr, "Usage: bg <job> or fg <job>\n<job> can be pid or jid\n");
+        fprintf(stderr, "%s command requires PID or %%jobid argument\n", argv[0]);
         return;
     }
     arg2 = argv[1];
@@ -222,14 +221,14 @@ void do_bgfg(char **argv)
         while(arg2[++count]) { // check if arg is valid
             byte = arg2[count];
             if(!isdigit(byte)) {
-                fprintf(stderr, "Usage: bg <job> or fg <job>\n<job> can be pid or jid\n");
+                fprintf(stderr, "%s: argument must be a PID or %%jobid\n", argv[0]);
                 return;
             }
         }
         strcpy(jidChar, arg2+1);
         jid = atoi(jidChar);
         if((job = getjobjid(jobs, jid)) == NULL) {
-            fprintf(stderr, "Jid: %d doesn't exist\n", jid);
+            fprintf(stderr, "%%%d: No such job\n", jid);
             return;
         }
         pid = job->pid;
@@ -238,13 +237,13 @@ void do_bgfg(char **argv)
         while(arg2[count++]) { // check if arg is valid
             byte = arg2[count-1];
             if(!isdigit(byte)) {
-                fprintf(stderr, "Usage: bg <job> or fg <job>\n<job> can be pid or jid\n");
+                fprintf(stderr, "%s: argument must be a PID or %%jobid\n", argv[0]);
                 return;
             }
         }
         pid = atoi(arg2);
         if(!(jid = pid2jid(jobs, pid))) {
-            fprintf(stderr, "Pid: %d doesn't exist\n", pid);
+            fprintf(stderr, "(%d): No such process\n", pid);
             return;
         }
         job = getjobpid(jobs, pid);
