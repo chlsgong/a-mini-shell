@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     exit(-1);
   }
   else {
-	kill(arg, 10);
+	kill(arg, SIGUSR1);
   }
   return 0;
 }

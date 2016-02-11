@@ -75,7 +75,7 @@ Questions regarding Part 1
 (2) What is the last assembly language instruction executed by the
   signal handler function that you write?  (You may choose either signal
   handler.)
-  callq 0x4007a0 <write@plt> for the SIGUSR1 signal
+  callq 0x4007a0 <write@plt> // for the SIGUSR1 signal
 
 (3) After the instruction identified in the previous question executes, 
   what is the next assembly language instruction executed?

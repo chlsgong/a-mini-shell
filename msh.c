@@ -125,6 +125,7 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
+    // printf("%s", cmdline);
 	pid_t child;
     sigset_t mask;
     char* argv[MAXARGS];
@@ -132,6 +133,8 @@ void eval(char *cmdline)
 
     sigemptyset(&mask);
     sigaddset(&mask, SIGCHLD);
+    sigaddset(&mask, SIGTSTP);
+    sigaddset(&mask, SIGINT);
     sigprocmask(SIG_BLOCK, &mask, NULL);
 
     if(cmdline[0] == '\n')
@@ -149,11 +152,11 @@ void eval(char *cmdline)
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             if(execve(argv[0], argv, environ) < 0) {
                 fprintf(stderr, "%s: Command not found\n", argv[0]);
-                exit(0);
+                exit(-1);
             }
         }
         // parent process
-        if(bg == 0) { // if a foreground job, wait for child process to finish
+        else if(bg == 0) { // if a foreground job, wait for child process to finish
             addjob(jobs, child, FG, cmdline);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             waitfg(child);
@@ -281,6 +284,7 @@ void waitfg(pid_t pid)
         sigsuspend(&waitMask);
         sigaddset(&waitMask, SIGCHLD);
     }
+    sigprocmask(SIG_UNBLOCK, &waitMask, NULL);
     return;
 }
 
@@ -299,22 +303,32 @@ void sigchld_handler(int sig)
 {   
     pid_t pid;
     struct job_t* job;
-    int status;
+    int status, jid;
+    char msg[60];
     errno = 0;
 
     // WNOHANG|WUNTRACED returns 0 if no children has stopped or terminated
     // else return pid
     while((pid = waitpid(-1, &status, WNOHANG|WUNTRACED)) > 0) {
-        if(status && status != 9) {
-            job = getjobpid(jobs, pid);
-            job->state = ST;
+        if(status >= 0) {
+            if(status && status != SIGKILL && status != SIGINT) {
+                jid = pid2jid(jobs, pid);
+                sprintf(msg, "Job [%d] (%d) stopped by signal 20", jid, pid);
+                puts(msg);
+                job = getjobpid(jobs, pid);
+                job->state = ST;
+            }
+            else {  
+                jid = pid2jid(jobs, pid);
+                sprintf(msg, "Job [%d] (%d) terminated by signal 2", jid, pid);
+                puts(msg);
+                deletejob(jobs, pid);
+            }
         }
-        else
-            deletejob(jobs, pid);
     }
     if(errno == EINTR) {
         if((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) {
-            if(status && status != 9) {
+            if(status && status != SIGKILL) {
                 job = getjobpid(jobs, pid);
                 job->state = ST;
             }
@@ -334,15 +348,15 @@ void sigchld_handler(int sig)
  */
 void sigint_handler(int sig) 
 {
-    pid_t fgjob;
-    int fgjid;
-    char msg[60];
+    pid_t pid;
+    // int fgjid;
+    // char msg[60];
 
-    if((fgjob = fgpid(jobs)) > 0) {
-        fgjid = pid2jid(jobs, fgjob);
-        kill(-fgjob, SIGKILL); // terminated job
-        sprintf(msg, "Job [%d] (%d) terminated by signal 2", fgjid, fgjob);
-        puts(msg);
+    if((pid = fgpid(jobs)) > 0) {
+        // fgjid = pid2jid(jobs, pid);
+        kill(-pid, SIGKILL); // terminated job
+        // sprintf(msg, "Job [%d] (%d) terminated by signal 2", fgjid, pid);
+        // puts(msg);
     }
     return;
 }
@@ -354,15 +368,15 @@ void sigint_handler(int sig)
  */
 void sigtstp_handler(int sig) 
 {
-    pid_t fgjob;
-    int fgjid;
-    char msg[60];
+    pid_t pid;
+    // int fgjid;
+    // char msg[60];
 
-    if((fgjob = fgpid(jobs)) > 0) {
-        fgjid = pid2jid(jobs, fgjob);
-        kill(-fgjob, SIGTSTP); // stops job
-        sprintf(msg, "Job [%d] (%d) stopped by signal 20", fgjid, fgjob);
-        puts(msg);
+    if((pid = fgpid(jobs)) > 0) {
+        // fgjid = pid2jid(jobs, pid);
+        kill(-pid, SIGTSTP); // stops job
+        // sprintf(msg, "Job [%d] (%d) stopped by signal 20", fgjid, pid);
+        // puts(msg);
     }
     return;
 }
