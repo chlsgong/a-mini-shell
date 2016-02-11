@@ -146,6 +146,7 @@ void eval(char *cmdline)
         child = fork();
         // printf("BG: %d, Child: %d\n", bg, child);
         if(child == 0) { // child process
+            setpgid(0, 0);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             if(execve(argv[0], argv, environ) < 0) {
                 printf("Command not found: %s.\n", argv[0]);
@@ -232,14 +233,28 @@ void waitfg(pid_t pid)
 void sigchld_handler(int sig) 
 {   
     pid_t pid;
+    struct job_t* job;
+    int status;
     errno = 0;
 
-    while((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) {
-        deletejob(jobs, pid);
+    // WNOHANG|WUNTRACED returns 0 if no children has stopped or terminated
+    // else return pid
+    while((pid = waitpid(-1, &status, WNOHANG|WUNTRACED)) > 0) {
+        if(status && status != 9) {
+            job = getjobpid(jobs, pid);
+            job->state = ST;
+        }
+        else
+            deletejob(jobs, pid);
     }
     if(errno == EINTR) {
         if((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) {
-            deletejob(jobs, pid);
+            if(status && status != 9) {
+                job = getjobpid(jobs, pid);
+                job->state = ST;
+            }
+            else
+                deletejob(jobs, pid);
         }
     }
     else if(errno != ECHILD && pid != 0)
@@ -254,6 +269,16 @@ void sigchld_handler(int sig)
  */
 void sigint_handler(int sig) 
 {
+    pid_t fgjob;
+    int fgjid;
+    char msg[60];
+
+    if((fgjob = fgpid(jobs)) > 0) {
+        fgjid = pid2jid(jobs, fgjob);
+        kill(-fgjob, SIGKILL); // terminated job
+        sprintf(msg, "Job [%d] (%d) terminated by signal 2", fgjid, fgjob);
+        puts(msg);
+    }
     return;
 }
 
@@ -264,6 +289,16 @@ void sigint_handler(int sig)
  */
 void sigtstp_handler(int sig) 
 {
+    pid_t fgjob;
+    int fgjid;
+    char msg[60];
+
+    if((fgjob = fgpid(jobs)) > 0) {
+        fgjid = pid2jid(jobs, fgjob);
+        kill(-fgjob, SIGTSTP); // stops job
+        sprintf(msg, "Job [%d] (%d) stopped by signal 20", fgjid, fgjob);
+        puts(msg);
+    }
     return;
 }
 
