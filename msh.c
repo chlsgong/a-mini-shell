@@ -149,7 +149,7 @@ void eval(char *cmdline)
             setpgid(0, 0);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             if(execve(argv[0], argv, environ) < 0) {
-                printf("Command not found: %s.\n", argv[0]);
+                fprintf(stderr, "Command not found: %s\n", argv[0]);
                 exit(0);
             }
         }
@@ -180,8 +180,8 @@ int builtin_cmd(char **argv)
 {
 	char* quit = "quit";
     char* jobsCmd = "jobs";
-    // char* bg = "bg";
-    // char* fg = "fg";
+    char* bg = "bg";
+    char* fg = "fg";
 
     if(strcmp(argv[0], jobsCmd) == 0) { // lists jobs
         listjobs(jobs);
@@ -190,6 +190,14 @@ int builtin_cmd(char **argv)
     if(strcmp(argv[0], quit) == 0) { // quit command
         exit(0);
     }
+    if(strcmp(argv[0], bg) == 0) { // restart as backgroudn process
+        do_bgfg(argv);
+        return 1;
+    }
+    if(strcmp(argv[0], fg) == 0) { // restart as foreground process
+        do_bgfg(argv);
+        return 1;
+    }
     return 0;     /* not a builtin command */
 }
 
@@ -197,7 +205,65 @@ int builtin_cmd(char **argv)
  * do_bgfg - Execute the builtin bg and fg commands
  */
 void do_bgfg(char **argv) 
-{
+{   
+    pid_t pid;
+    struct job_t* job;
+    char* arg2;
+    char jidChar[3];
+    int count = 0, byte, jid;
+
+    if(!argv[1]) { // get jid or pid
+        fprintf(stderr, "Usage: bg <job> or fg <job>\n<job> can be pid or jid\n");
+        return;
+    }
+    arg2 = argv[1];
+
+    if(arg2[0] == '%') { // if jid is passed in
+        while(arg2[++count]) { // check if arg is valid
+            byte = arg2[count];
+            if(!isdigit(byte)) {
+                fprintf(stderr, "Usage: bg <job> or fg <job>\n<job> can be pid or jid\n");
+                return;
+            }
+        }
+        strcpy(jidChar, arg2+1);
+        jid = atoi(jidChar);
+        if((job = getjobjid(jobs, jid)) == NULL) {
+            fprintf(stderr, "Jid: %d doesn't exist\n", jid);
+            return;
+        }
+        pid = job->pid;
+    }
+    else { // else if pid is passed in
+        while(arg2[count++]) { // check if arg is valid
+            byte = arg2[count-1];
+            if(!isdigit(byte)) {
+                fprintf(stderr, "Usage: bg <job> or fg <job>\n<job> can be pid or jid\n");
+                return;
+            }
+        }
+        pid = atoi(arg2);
+        if(!(jid = pid2jid(jobs, pid))) {
+            fprintf(stderr, "Pid: %d doesn't exist\n", pid);
+            return;
+        }
+        job = getjobpid(jobs, pid);
+    }
+
+    if(strcmp(argv[0], "bg") == 0) { // run as bg
+        if(job->state != BG) {
+            job->state = BG;
+            kill(-pid, SIGCONT);
+            printf("[%d] (%d) %s", jid, pid, job->cmdline);
+        }
+    }
+    else { // run as fg
+        if(job->state != FG) {
+            job->state = FG;
+            kill(-pid, SIGCONT);
+            waitfg(pid);
+        }
+    }
     return;
 }
 
