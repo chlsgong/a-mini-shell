@@ -164,19 +164,17 @@ void eval(char *cmdline)
         // parent process
         if(bg == 0) { // if a foreground job, wait for child process to finish
             addJob = addjob(jobs, child, FG, cmdline);
-	    if (!addJob) {
-	         unix_error("add job error. \n");
-	         exit(-1);
-	    }	
+	        if (!addJob) {
+	           unix_error("add job error. \n");
+	        }	
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             waitfg(child);
         }
         else { // if a background job
             addJob = addjob(jobs, child, BG, cmdline);
-	    if (!addJob) {
-	         unix_error("add job error. \n");
-		 exit (-1);
-	    }
+	        if (!addJob) {
+	           unix_error("add job error. \n");
+	        }
             jid = pid2jid(jobs, child); // get job from pid then prints it
             printf("[%d] (%d) %s", jid, child, cmdline);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
@@ -351,7 +349,6 @@ void sigchld_handler(int sig)
         sigchld_handler(sig);
     else if(errno != ECHILD && pid != 0) {
         unix_error("waitpid error");
-        exit(-1);
     }
     return;
 }

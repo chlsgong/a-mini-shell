@@ -43,7 +43,7 @@ YOUR RUN #04:
 # trace04.txt - Run a background job.
 #
 msh> ./myspin 1 &
-[1] (5239) ./myspin 1 &
+[1] (6694) ./myspin 1 &
 -------------------------------------------
 REFERENCE RUN #04:
 ./sdriver.pl -t trace04.txt -s ./mshref -a "-p"
@@ -51,7 +51,7 @@ REFERENCE RUN #04:
 # trace04.txt - Run a background job.
 #
 msh> ./myspin 1 &
-[1] (5249) ./myspin 1 &
+[1] (6706) ./myspin 1 &
 -------------------------------------------
 YOUR RUN #05:
 ./sdriver.pl -t trace05.txt -s ./msh -a "-p"
@@ -59,12 +59,12 @@ YOUR RUN #05:
 # trace05.txt - Process jobs builtin command.
 #
 msh> ./myspin 2 &
-[1] (5262) ./myspin 2 &
+[1] (6722) ./myspin 2 &
 msh> ./myspin 3 &
-[2] (5264) ./myspin 3 &
+[2] (6724) ./myspin 3 &
 msh> jobs
-[1] (5262) Running ./myspin 2 &
-[2] (5264) Running ./myspin 3 &
+[1] (6722) Running ./myspin 2 &
+[2] (6724) Running ./myspin 3 &
 -------------------------------------------
 REFERENCE RUN #05:
 ./sdriver.pl -t trace05.txt -s ./mshref -a "-p"
@@ -72,12 +72,12 @@ REFERENCE RUN #05:
 # trace05.txt - Process jobs builtin command.
 #
 msh> ./myspin 2 &
-[1] (5292) ./myspin 2 &
+[1] (6744) ./myspin 2 &
 msh> ./myspin 3 &
-[2] (5294) ./myspin 3 &
+[2] (6746) ./myspin 3 &
 msh> jobs
-[1] (5292) Running ./myspin 2 &
-[2] (5294) Running ./myspin 3 &
+[1] (6744) Running ./myspin 2 &
+[2] (6746) Running ./myspin 3 &
 -------------------------------------------
 YOUR RUN #06:
 ./sdriver.pl -t trace06.txt -s ./msh -a "-p"
@@ -85,7 +85,7 @@ YOUR RUN #06:
 # trace06.txt - Forward SIGINT to foreground job.
 #
 msh> ./myspin 4
-Job [1] (5310) terminated by signal 2
+Job [1] (6762) terminated by signal 2
 
 -------------------------------------------
 REFERENCE RUN #06:
@@ -94,7 +94,7 @@ REFERENCE RUN #06:
 # trace06.txt - Forward SIGINT to foreground job.
 #
 msh> ./myspin 4
-Job [1] (5319) terminated by signal 2
+Job [1] (6772) terminated by signal 2
 -------------------------------------------
 YOUR RUN #07:
 ./sdriver.pl -t trace07.txt -s ./msh -a "-p"
@@ -102,12 +102,12 @@ YOUR RUN #07:
 # trace07.txt - Forward SIGINT only to foreground job.
 #
 msh> ./myspin 4 &
-[1] (5339) ./myspin 4 &
+[1] (6794) ./myspin 4 &
 msh> ./myspin 5
-Job [2] (5341) terminated by signal 2
+Job [2] (6796) terminated by signal 2
 
 msh> jobs
-[1] (5339) Running ./myspin 4 &
+[1] (6794) Running ./myspin 4 &
 -------------------------------------------
 REFERENCE RUN #07:
 ./sdriver.pl -t trace07.txt -s ./mshref -a "-p"
@@ -115,11 +115,11 @@ REFERENCE RUN #07:
 # trace07.txt - Forward SIGINT only to foreground job.
 #
 msh> ./myspin 4 &
-[1] (5353) ./myspin 4 &
+[1] (6810) ./myspin 4 &
 msh> ./myspin 5
-Job [2] (5355) terminated by signal 2
+Job [2] (6812) terminated by signal 2
 msh> jobs
-[1] (5353) Running ./myspin 4 &
+[1] (6810) Running ./myspin 4 &
 -------------------------------------------
 YOUR RUN #08:
 ./sdriver.pl -t trace08.txt -s ./msh -a "-p"
@@ -127,13 +127,13 @@ YOUR RUN #08:
 # trace08.txt - Forward SIGTSTP only to foreground job.
 #
 msh> ./myspin 4 &
-[1] (5376) ./myspin 4 &
+[1] (6836) ./myspin 4 &
 msh> ./myspin 5
-Job [2] (5378) stopped by signal 20
+Job [2] (6838) stopped by signal 20
 
 msh> jobs
-[1] (5376) Running ./myspin 4 &
-[2] (5378) Stopped ./myspin 5 
+[1] (6836) Running ./myspin 4 &
+[2] (6838) Stopped ./myspin 5 
 -------------------------------------------
 REFERENCE RUN #08:
 ./sdriver.pl -t trace08.txt -s ./mshref -a "-p"
@@ -141,12 +141,12 @@ REFERENCE RUN #08:
 # trace08.txt - Forward SIGTSTP only to foreground job.
 #
 msh> ./myspin 4 &
-[1] (5391) ./myspin 4 &
+[1] (6852) ./myspin 4 &
 msh> ./myspin 5
-Job [2] (5393) stopped by signal 20
+Job [2] (6854) stopped by signal 20
 msh> jobs
-[1] (5391) Running ./myspin 4 &
-[2] (5393) Stopped ./myspin 5 
+[1] (6852) Running ./myspin 4 &
+[2] (6854) Stopped ./myspin 5 
 -------------------------------------------
 YOUR RUN #09:
 ./sdriver.pl -t trace09.txt -s ./msh -a "-p"
@@ -154,18 +154,18 @@ YOUR RUN #09:
 # trace09.txt - Process bg builtin command
 #
 msh> ./myspin 4 &
-[1] (5417) ./myspin 4 &
+[1] (6877) ./myspin 4 &
 msh> ./myspin 5
-Job [2] (5419) stopped by signal 20
+Job [2] (6879) stopped by signal 20
 
 msh> jobs
-[1] (5417) Running ./myspin 4 &
-[2] (5419) Stopped ./myspin 5 
+[1] (6877) Running ./myspin 4 &
+[2] (6879) Stopped ./myspin 5 
 msh> bg %2
-[2] (5419) ./myspin 5 
+[2] (6879) ./myspin 5 
 msh> jobs
-[1] (5417) Running ./myspin 4 &
-[2] (5419) Running ./myspin 5 
+[1] (6877) Running ./myspin 4 &
+[2] (6879) Running ./myspin 5 
 -------------------------------------------
 REFERENCE RUN #09:
 ./sdriver.pl -t trace09.txt -s ./mshref -a "-p"
@@ -173,17 +173,17 @@ REFERENCE RUN #09:
 # trace09.txt - Process bg builtin command
 #
 msh> ./myspin 4 &
-[1] (5437) ./myspin 4 &
+[1] (6893) ./myspin 4 &
 msh> ./myspin 5
-Job [2] (5439) stopped by signal 20
+Job [2] (6895) stopped by signal 20
 msh> jobs
-[1] (5437) Running ./myspin 4 &
-[2] (5439) Stopped ./myspin 5 
+[1] (6893) Running ./myspin 4 &
+[2] (6895) Stopped ./myspin 5 
 msh> bg %2
-[2] (5439) ./myspin 5 
+[2] (6895) ./myspin 5 
 msh> jobs
-[1] (5437) Running ./myspin 4 &
-[2] (5439) Running ./myspin 5 
+[1] (6893) Running ./myspin 4 &
+[2] (6895) Running ./myspin 5 
 -------------------------------------------
 YOUR RUN #10:
 ./sdriver.pl -t trace10.txt -s ./msh -a "-p"
@@ -191,12 +191,12 @@ YOUR RUN #10:
 # trace10.txt - Process fg builtin command. 
 #
 msh> ./myspin 4 &
-[1] (5464) ./myspin 4 &
+[1] (6920) ./myspin 4 &
 msh> fg %1
-Job [1] (5464) stopped by signal 20
+Job [1] (6920) stopped by signal 20
 
 msh> jobs
-[1] (5464) Stopped ./myspin 4 &
+[1] (6920) Stopped ./myspin 4 &
 msh> fg %1
 msh> jobs
 -------------------------------------------
@@ -206,11 +206,11 @@ REFERENCE RUN #10:
 # trace10.txt - Process fg builtin command. 
 #
 msh> ./myspin 4 &
-[1] (5479) ./myspin 4 &
+[1] (6936) ./myspin 4 &
 msh> fg %1
-Job [1] (5479) stopped by signal 20
+Job [1] (6936) stopped by signal 20
 msh> jobs
-[1] (5479) Stopped ./myspin 4 &
+[1] (6936) Stopped ./myspin 4 &
 msh> fg %1
 msh> jobs
 -------------------------------------------
@@ -220,7 +220,7 @@ YOUR RUN #11:
 # trace11.txt - Forward SIGINT to every process in foreground process group
 #
 msh> ./mysplit 4
-Job [1] (5505) terminated by signal 2
+Job [1] (6963) terminated by signal 2
 
 msh> /bin/ps a
   PID TTY      STAT   TIME COMMAND
@@ -231,14 +231,13 @@ msh> /bin/ps a
  1142 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
  1390 pts/4    Ss     0:00 bash
  2519 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
- 3483 pts/1    Ss+    0:00 bash
- 5175 pts/4    S+     0:00 bash run_all_traces.sh
- 5500 pts/4    S+     0:00 make test11
- 5501 pts/4    S+     0:00 /bin/sh -c ./sdriver.pl -t trace11.txt -s ./msh -a "-p"
- 5502 pts/4    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace11.txt -s ./msh -a -p
- 5503 pts/4    S+     0:00 ./msh -p
- 5508 pts/4    R      0:00 /bin/ps a
-32566 tty7     Ss+    4:32 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+ 6630 pts/4    S+     0:00 bash run_all_traces.sh
+ 6958 pts/4    S+     0:00 make test11
+ 6959 pts/4    S+     0:00 /bin/sh -c ./sdriver.pl -t trace11.txt -s ./msh -a "-p"
+ 6960 pts/4    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace11.txt -s ./msh -a -p
+ 6961 pts/4    S+     0:00 ./msh -p
+ 6969 pts/4    R      0:00 /bin/ps a
+32566 tty7     Ss+    5:28 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
 -------------------------------------------
 YOUR RUN #12:
 ./sdriver.pl -t trace12.txt -s ./msh -a "-p"
@@ -246,10 +245,10 @@ YOUR RUN #12:
 # trace12.txt - Forward SIGTSTP to every process in foreground process group
 #
 msh> ./mysplit 4
-Job [1] (5517) stopped by signal 20
+Job [1] (6978) stopped by signal 20
 
 msh> jobs
-[1] (5517) Stopped ./mysplit 4 
+[1] (6978) Stopped ./mysplit 4 
 msh> /bin/ps a
   PID TTY      STAT   TIME COMMAND
  1122 tty4     Ss+    0:00 /sbin/getty -8 38400 tty4
@@ -259,16 +258,15 @@ msh> /bin/ps a
  1142 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
  1390 pts/4    Ss     0:00 bash
  2519 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
- 3483 pts/1    Ss+    0:00 bash
- 5175 pts/4    S+     0:00 bash run_all_traces.sh
- 5512 pts/4    S+     0:00 make test12
- 5513 pts/4    S+     0:00 /bin/sh -c ./sdriver.pl -t trace12.txt -s ./msh -a "-p"
- 5514 pts/4    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace12.txt -s ./msh -a -p
- 5515 pts/4    S+     0:00 ./msh -p
- 5517 pts/4    T      0:00 ./mysplit 4
- 5518 pts/4    T      0:00 ./mysplit 4
- 5523 pts/4    R      0:00 /bin/ps a
-32566 tty7     Ss+    4:32 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+ 6630 pts/4    S+     0:00 bash run_all_traces.sh
+ 6973 pts/4    S+     0:00 make test12
+ 6974 pts/4    S+     0:00 /bin/sh -c ./sdriver.pl -t trace12.txt -s ./msh -a "-p"
+ 6975 pts/4    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace12.txt -s ./msh -a -p
+ 6976 pts/4    S+     0:00 ./msh -p
+ 6978 pts/4    T      0:00 ./mysplit 4
+ 6979 pts/4    T      0:00 ./mysplit 4
+ 6983 pts/4    R      0:00 /bin/ps a
+32566 tty7     Ss+    5:28 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
 -------------------------------------------
 YOUR RUN #13:
 ./sdriver.pl -t trace13.txt -s ./msh -a "-p"
@@ -276,10 +274,10 @@ YOUR RUN #13:
 # trace13.txt - Restart every stopped process in process group
 #
 msh> ./mysplit 4
-Job [1] (5533) stopped by signal 20
+Job [1] (6993) stopped by signal 20
 
 msh> jobs
-[1] (5533) Stopped ./mysplit 4 
+[1] (6993) Stopped ./mysplit 4 
 msh> /bin/ps a
   PID TTY      STAT   TIME COMMAND
  1122 tty4     Ss+    0:00 /sbin/getty -8 38400 tty4
@@ -289,16 +287,15 @@ msh> /bin/ps a
  1142 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
  1390 pts/4    Ss     0:00 bash
  2519 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
- 3483 pts/1    Ss+    0:00 bash
- 5175 pts/4    S+     0:00 bash run_all_traces.sh
- 5528 pts/4    S+     0:00 make test13
- 5529 pts/4    S+     0:00 /bin/sh -c ./sdriver.pl -t trace13.txt -s ./msh -a "-p"
- 5530 pts/4    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace13.txt -s ./msh -a -p
- 5531 pts/4    S+     0:00 ./msh -p
- 5533 pts/4    T      0:00 ./mysplit 4
- 5534 pts/4    T      0:00 ./mysplit 4
- 5538 pts/4    R      0:00 /bin/ps a
-32566 tty7     Ss+    4:32 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+ 6630 pts/4    S+     0:00 bash run_all_traces.sh
+ 6988 pts/4    S+     0:00 make test13
+ 6989 pts/4    S+     0:00 /bin/sh -c ./sdriver.pl -t trace13.txt -s ./msh -a "-p"
+ 6990 pts/4    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace13.txt -s ./msh -a -p
+ 6991 pts/4    S+     0:00 ./msh -p
+ 6993 pts/4    T      0:00 ./mysplit 4
+ 6994 pts/4    T      0:00 ./mysplit 4
+ 6997 pts/4    R      0:00 /bin/ps a
+32566 tty7     Ss+    5:28 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
 msh> fg %1
 msh> /bin/ps a
   PID TTY      STAT   TIME COMMAND
@@ -309,14 +306,13 @@ msh> /bin/ps a
  1142 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
  1390 pts/4    Ss     0:00 bash
  2519 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
- 3483 pts/1    Ss+    0:00 bash
- 5175 pts/4    S+     0:00 bash run_all_traces.sh
- 5528 pts/4    S+     0:00 make test13
- 5529 pts/4    S+     0:00 /bin/sh -c ./sdriver.pl -t trace13.txt -s ./msh -a "-p"
- 5530 pts/4    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace13.txt -s ./msh -a -p
- 5531 pts/4    S+     0:00 ./msh -p
- 5550 pts/4    R      0:00 /bin/ps a
-32566 tty7     Ss+    4:32 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+ 6630 pts/4    S+     0:00 bash run_all_traces.sh
+ 6988 pts/4    S+     0:00 make test13
+ 6989 pts/4    S+     0:00 /bin/sh -c ./sdriver.pl -t trace13.txt -s ./msh -a "-p"
+ 6990 pts/4    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace13.txt -s ./msh -a -p
+ 6991 pts/4    S+     0:00 ./msh -p
+ 7000 pts/4    R      0:00 /bin/ps a
+32566 tty7     Ss+    5:28 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
 -------------------------------------------
 YOUR RUN #14:
 ./sdriver.pl -t trace14.txt -s ./msh -a "-p"
@@ -326,7 +322,7 @@ YOUR RUN #14:
 msh> ./bogus
 ./bogus: Command not found
 msh> ./myspin 4 &
-[1] (5562) ./myspin 4 &
+[1] (7012) ./myspin 4 &
 msh> fg
 fg command requires PID or %jobid argument
 msh> bg
@@ -342,14 +338,14 @@ msh> bg 9999999
 msh> fg %2
 %2: No such job
 msh> fg %1
-Job [1] (5562) stopped by signal 20
+Job [1] (7012) stopped by signal 20
 
 msh> bg %2
 %2: No such job
 msh> bg %1
-[1] (5562) ./myspin 4 &
+[1] (7012) ./myspin 4 &
 msh> jobs
-[1] (5562) Running ./myspin 4 &
+[1] (7012) Running ./myspin 4 &
 -------------------------------------------
 REFERENCE RUN #14:
 ./sdriver.pl -t trace14.txt -s ./mshref -a "-p"
@@ -359,7 +355,7 @@ REFERENCE RUN #14:
 msh> ./bogus
 ./bogus: Command not found
 msh> ./myspin 4 &
-[1] (5585) ./myspin 4 &
+[1] (7034) ./myspin 4 &
 msh> fg
 fg command requires PID or %jobid argument
 msh> bg
@@ -375,13 +371,13 @@ msh> bg 9999999
 msh> fg %2
 %2: No such job
 msh> fg %1
-Job [1] (5585) stopped by signal 20
+Job [1] (7034) stopped by signal 20
 msh> bg %2
 %2: No such job
 msh> bg %1
-[1] (5585) ./myspin 4 &
+[1] (7034) ./myspin 4 &
 msh> jobs
-[1] (5585) Running ./myspin 4 &
+[1] (7034) Running ./myspin 4 &
 -------------------------------------------
 YOUR RUN #15:
 ./sdriver.pl -t trace15.txt -s ./msh -a "-p"
@@ -391,28 +387,28 @@ YOUR RUN #15:
 msh> ./bogus
 ./bogus: Command not found
 msh> ./myspin 10
-Job [1] (5620) terminated by signal 2
+Job [1] (7069) terminated by signal 2
 
 msh> ./myspin 3 &
-[1] (5622) ./myspin 3 &
+[1] (7076) ./myspin 3 &
 msh> ./myspin 4 &
-[2] (5624) ./myspin 4 &
+[2] (7078) ./myspin 4 &
 msh> jobs
-[1] (5622) Running ./myspin 3 &
-[2] (5624) Running ./myspin 4 &
+[1] (7076) Running ./myspin 3 &
+[2] (7078) Running ./myspin 4 &
 msh> fg %1
-Job [1] (5622) stopped by signal 20
+Job [1] (7076) stopped by signal 20
 
 msh> jobs
-[1] (5622) Stopped ./myspin 3 &
-[2] (5624) Running ./myspin 4 &
+[1] (7076) Stopped ./myspin 3 &
+[2] (7078) Running ./myspin 4 &
 msh> bg %3
 %3: No such job
 msh> bg %1
-[1] (5622) ./myspin 3 &
+[1] (7076) ./myspin 3 &
 msh> jobs
-[1] (5622) Running ./myspin 3 &
-[2] (5624) Running ./myspin 4 &
+[1] (7076) Running ./myspin 3 &
+[2] (7078) Running ./myspin 4 &
 msh> fg %1
 msh> quit
 -------------------------------------------
@@ -424,26 +420,26 @@ REFERENCE RUN #15:
 msh> ./bogus
 ./bogus: Command not found
 msh> ./myspin 10
-Job [1] (5644) terminated by signal 2
+Job [1] (7098) terminated by signal 2
 msh> ./myspin 3 &
-[1] (5646) ./myspin 3 &
+[1] (7102) ./myspin 3 &
 msh> ./myspin 4 &
-[2] (5648) ./myspin 4 &
+[2] (7104) ./myspin 4 &
 msh> jobs
-[1] (5646) Running ./myspin 3 &
-[2] (5648) Running ./myspin 4 &
+[1] (7102) Running ./myspin 3 &
+[2] (7104) Running ./myspin 4 &
 msh> fg %1
-Job [1] (5646) stopped by signal 20
+Job [1] (7102) stopped by signal 20
 msh> jobs
-[1] (5646) Stopped ./myspin 3 &
-[2] (5648) Running ./myspin 4 &
+[1] (7102) Stopped ./myspin 3 &
+[2] (7104) Running ./myspin 4 &
 msh> bg %3
 %3: No such job
 msh> bg %1
-[1] (5646) ./myspin 3 &
+[1] (7102) ./myspin 3 &
 msh> jobs
-[1] (5646) Running ./myspin 3 &
-[2] (5648) Running ./myspin 4 &
+[1] (7102) Running ./myspin 3 &
+[2] (7104) Running ./myspin 4 &
 msh> fg %1
 msh> quit
 -------------------------------------------
@@ -454,12 +450,12 @@ YOUR RUN #16:
 #     signals that come from other processes instead of the terminal.
 #
 msh> ./mystop 2
-Job [1] (5677) stopped by signal 20
+Job [1] (7134) stopped by signal 20
 
 msh> jobs
-[1] (5677) Stopped ./mystop 2
+[1] (7134) Stopped ./mystop 2
 msh> ./myint 2
-Job [2] (5681) terminated by signal 2
+Job [2] (7143) terminated by signal 2
 
 -------------------------------------------
 REFERENCE RUN #16:
@@ -469,9 +465,9 @@ REFERENCE RUN #16:
 #     signals that come from other processes instead of the terminal.
 #
 msh> ./mystop 2
-Job [1] (5690) stopped by signal 20
+Job [1] (7152) stopped by signal 20
 msh> jobs
-[1] (5690) Stopped ./mystop 2
+[1] (7152) Stopped ./mystop 2
 msh> ./myint 2
-Job [2] (5695) terminated by signal 2
+Job [2] (7159) terminated by signal 2
 -------------------------------------------
