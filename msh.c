@@ -125,7 +125,7 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
-    // printf("%s", cmdline);
+    // printf("cmd: %s", cmdline);
 	pid_t child;
     sigset_t mask;
     char* argv[MAXARGS];
@@ -156,7 +156,7 @@ void eval(char *cmdline)
             }
         }
         // parent process
-        else if(bg == 0) { // if a foreground job, wait for child process to finish
+        if(bg == 0) { // if a foreground job, wait for child process to finish
             addjob(jobs, child, FG, cmdline);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             waitfg(child);
@@ -311,30 +311,34 @@ void sigchld_handler(int sig)
     // else return pid
     while((pid = waitpid(-1, &status, WNOHANG|WUNTRACED)) > 0) {
         if(status >= 0) {
-            if(status && status != SIGKILL && status != SIGINT) {
+            if(WIFSTOPPED(status)) {
                 jid = pid2jid(jobs, pid);
                 sprintf(msg, "Job [%d] (%d) stopped by signal 20", jid, pid);
                 puts(msg);
                 job = getjobpid(jobs, pid);
                 job->state = ST;
             }
-            else {  
+            else if(WIFSIGNALED(status)) {  
                 jid = pid2jid(jobs, pid);
                 sprintf(msg, "Job [%d] (%d) terminated by signal 2", jid, pid);
                 puts(msg);
                 deletejob(jobs, pid);
             }
+            else if(WIFEXITED(status)) {
+                deletejob(jobs, pid);
+            }
         }
     }
     if(errno == EINTR) {
-        if((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) {
-            if(status && status != SIGKILL) {
-                job = getjobpid(jobs, pid);
-                job->state = ST;
-            }
-            else
-                deletejob(jobs, pid);
-        }
+        sigchld_handler(sig);
+        // if((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) {
+        //     if(status && status != SIGKILL) {
+        //         job = getjobpid(jobs, pid);
+        //         job->state = ST;
+        //     }
+        //     else
+        //         deletejob(jobs, pid);
+        // }
     }
     else if(errno != ECHILD && pid != 0)
         unix_error("waitpid error");
