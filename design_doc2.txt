@@ -119,3 +119,4 @@ Questions regarding Part 2
   By having three separate signal handlers, we can avoid having multiple interruptions from multiple signals at the same time. We can also choose which process to send the signal to. Having multiple signal handlers allow us to more easily customize the way we deal with each of the signals. 
 
 
+

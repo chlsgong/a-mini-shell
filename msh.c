@@ -4,12 +4,7 @@
  * <Put your name and login ID here>
  * Charles Gong
  * hcg359
- * 
- * Manasa Tipparam
- * mt32855
- *
  */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -130,20 +125,18 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
-   //Charles is driving
 	pid_t child;
     sigset_t mask;
     char* argv[MAXARGS];
-    int bg, jid, builtin, addJob;
+    int bg, jid, builtin;
 
     sigemptyset(&mask);
     sigaddset(&mask, SIGCHLD);
     sigaddset(&mask, SIGTSTP);
     sigaddset(&mask, SIGINT);
     sigprocmask(SIG_BLOCK, &mask, NULL);
-    
-    //Manasa is redriving
-    if(cmdline[0] == '\n') // Check if no cmdline args (enter key)
+
+    if(cmdline[0] == '\n')
         return;
 
     bg = parseline(cmdline, argv);
@@ -151,7 +144,6 @@ void eval(char *cmdline)
     if(builtin)
         sigprocmask(SIG_UNBLOCK, &mask, NULL);
     else { // not a built in command
-        //printf("Process forks here.\n");
         child = fork();
         if(child == 0) { // child process
             setpgid(0, 0);
@@ -163,18 +155,12 @@ void eval(char *cmdline)
         }
         // parent process
         if(bg == 0) { // if a foreground job, wait for child process to finish
-            addJob = addjob(jobs, child, FG, cmdline);
-	        if (!addJob) {
-	           unix_error("add job error. \n");
-	        }	
+            addjob(jobs, child, FG, cmdline);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             waitfg(child);
         }
         else { // if a background job
-            addJob = addjob(jobs, child, BG, cmdline);
-	        if (!addJob) {
-	           unix_error("add job error. \n");
-	        }
+            addjob(jobs, child, BG, cmdline);
             jid = pid2jid(jobs, child); // get job from pid then prints it
             printf("[%d] (%d) %s", jid, child, cmdline);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
@@ -192,10 +178,7 @@ void eval(char *cmdline)
  */
 int builtin_cmd(char **argv) 
 {
-    //Manasa is driving 
-   
-    char* quit = "quit";
-    char* quitQ = "q";
+	char* quit = "quit";
     char* jobsCmd = "jobs";
     char* bg = "bg";
     char* fg = "fg";
@@ -204,16 +187,17 @@ int builtin_cmd(char **argv)
         listjobs(jobs);
         return 1;
     }
-    if(strcmp(argv[0], quit) == 0|| strcmp(argv[0], quitQ) == 0) { // quit command
+    if(strcmp(argv[0], quit) == 0) { // quit command
         exit(0);
     }
-
-    // restart as background or foreground process
-    if(strcmp(argv[0], bg) == 0 || strcmp(argv[0], fg) == 0) {
+    if(strcmp(argv[0], bg) == 0) { // restart as backgroudn process
         do_bgfg(argv);
         return 1;
     }
-   
+    if(strcmp(argv[0], fg) == 0) { // restart as foreground process
+        do_bgfg(argv);
+        return 1;
+    }
     return 0;     /* not a builtin command */
 }
 
@@ -221,9 +205,7 @@ int builtin_cmd(char **argv)
  * do_bgfg - Execute the builtin bg and fg commands
  */
 void do_bgfg(char **argv) 
-{  
-    //Charles is driving 
- 
+{   
     pid_t pid;
     struct job_t* job;
     char* arg2;
@@ -237,8 +219,8 @@ void do_bgfg(char **argv)
     arg2 = argv[1];
 
     if(arg2[0] == '%') { // if jid is passed in
-        while(arg2[++count]) { // check if arg is valid (must be numeric)
-            byte = arg2[count]; // byte = char at 'count'
+        while(arg2[++count]) { // check if arg is valid
+            byte = arg2[count];
             if(!isdigit(byte)) {
                 fprintf(stderr, "%s: argument must be a PID or %%jobid\n", argv[0]);
                 return;
@@ -253,15 +235,15 @@ void do_bgfg(char **argv)
         pid = job->pid;
     }
     else { // else if pid is passed in
-        while(arg2[count++]) { // check if arg is valid (must be numeric)
+        while(arg2[count++]) { // check if arg is valid
             byte = arg2[count-1];
             if(!isdigit(byte)) {
                 fprintf(stderr, "%s: argument must be a PID or %%jobid\n", argv[0]);
                 return;
-             }
+            }
         }
-        pid = atoi(arg2); 
-        if(!(jid = pid2jid(jobs, pid))) { 
+        pid = atoi(arg2);
+        if(!(jid = pid2jid(jobs, pid))) {
             fprintf(stderr, "(%d): No such process\n", pid);
             return;
         }
@@ -293,9 +275,9 @@ void waitfg(pid_t pid)
     sigset_t waitMask;
     sigemptyset(&waitMask);
     sigaddset(&waitMask, SIGCHLD);
-    sigprocmask(SIG_BLOCK, &waitMask, NULL);//block all signals
+    sigprocmask(SIG_BLOCK, &waitMask, NULL);
 
-    while(fgpid(jobs) == pid) { // while process = FG, block
+    while(fgpid(jobs) == pid) {
         sigdelset(&waitMask, SIGCHLD);
         sigsuspend(&waitMask);
         sigaddset(&waitMask, SIGCHLD);
@@ -329,14 +311,14 @@ void sigchld_handler(int sig)
         if(status >= 0) {
             if(WIFSTOPPED(status)) {
                 jid = pid2jid(jobs, pid);
-                sprintf(msg, "Job [%d] (%d) stopped by signal %d\n", jid, pid, SIGTSTP);
+                sprintf(msg, "Job [%d] (%d) stopped by signal 20", jid, pid);
                 puts(msg);
                 job = getjobpid(jobs, pid);
                 job->state = ST;
             }
             else if(WIFSIGNALED(status)) {  
                 jid = pid2jid(jobs, pid);
-                sprintf(msg, "Job [%d] (%d) terminated by signal %d\n", jid, pid, SIGINT);
+                sprintf(msg, "Job [%d] (%d) terminated by signal 2", jid, pid);
                 puts(msg);
                 deletejob(jobs, pid);
             }
@@ -347,9 +329,8 @@ void sigchld_handler(int sig)
     }
     if(errno == EINTR) // if handler interrupted restart handler
         sigchld_handler(sig);
-    else if(errno != ECHILD && pid != 0) {
+    else if(errno != ECHILD && pid != 0)
         unix_error("waitpid error");
-    }
     return;
 }
 
