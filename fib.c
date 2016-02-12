@@ -81,23 +81,30 @@ doFib(int n, int doPrint)
   }
   else {
     child1 = fork();
-    if(child1 == 0) // child process
+    if(child1 == 0) {// child process
+      //printf("PID: %d, fork child1 \n", getpid());
       doFib(n-1, 0);
+    }
     else {
 	    child2 = fork();
-      if(child2 == 0) // child process
+      if(child2 == 0) {// child process
+        //printf("PID: %d, fork child2 \n", getpid());
         doFib(n-2, 0);
+      }
     }
     // Charles stopped driving, Manasa starts driving
     if((retpid = waitpid(child1, &status1, 0)) > 0)
-      if(WIFEXITED(status1))
+      if(WIFEXITED(status1)) { 
+        //printf("PID: %d, Return %d\n", child1, WEXITSTATUS(status1));
         if((retpid = waitpid(child2, &status2, 0)) > 0)
           if(WIFEXITED(status2)) {
+            //printf("PID: %d, Return %d\n", child2, WEXITSTATUS(status2));
             result += (WEXITSTATUS(status1) + WEXITSTATUS(status2));
             if(doPrint == 1)
               printf("%d\n", result);
             exit(result);
           }
+      }
   }
   // Manasa stopped driving
 }
