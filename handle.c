@@ -17,7 +17,7 @@ void sig_handler(int sig)
     const int STDOUT = 1; 
     if(sig == 10) {
 		bytes = write(STDOUT, "exiting\n", 8);
-		if(bytes != 10) {
+		if(bytes != SIGUSR1) {
        		exit(-999);
        	}
 		exit(1);	
