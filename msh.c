@@ -125,7 +125,6 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
-    // printf("cmd: %s", cmdline);
 	pid_t child;
     sigset_t mask;
     char* argv[MAXARGS];
@@ -146,7 +145,6 @@ void eval(char *cmdline)
         sigprocmask(SIG_UNBLOCK, &mask, NULL);
     else { // not a built in command
         child = fork();
-        // printf("BG: %d, Child: %d\n", bg, child);
         if(child == 0) { // child process
             setpgid(0, 0);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
@@ -329,17 +327,8 @@ void sigchld_handler(int sig)
             }
         }
     }
-    if(errno == EINTR) {
+    if(errno == EINTR) // if handler interrupted restart handler
         sigchld_handler(sig);
-        // if((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) {
-        //     if(status && status != SIGKILL) {
-        //         job = getjobpid(jobs, pid);
-        //         job->state = ST;
-        //     }
-        //     else
-        //         deletejob(jobs, pid);
-        // }
-    }
     else if(errno != ECHILD && pid != 0)
         unix_error("waitpid error");
     return;
@@ -353,15 +342,8 @@ void sigchld_handler(int sig)
 void sigint_handler(int sig) 
 {
     pid_t pid;
-    // int fgjid;
-    // char msg[60];
-
-    if((pid = fgpid(jobs)) > 0) {
-        // fgjid = pid2jid(jobs, pid);
+    if((pid = fgpid(jobs)) > 0)
         kill(-pid, SIGKILL); // terminated job
-        // sprintf(msg, "Job [%d] (%d) terminated by signal 2", fgjid, pid);
-        // puts(msg);
-    }
     return;
 }
 
@@ -373,15 +355,9 @@ void sigint_handler(int sig)
 void sigtstp_handler(int sig) 
 {
     pid_t pid;
-    // int fgjid;
-    // char msg[60];
 
-    if((pid = fgpid(jobs)) > 0) {
-        // fgjid = pid2jid(jobs, pid);
+    if((pid = fgpid(jobs)) > 0)
         kill(-pid, SIGTSTP); // stops job
-        // sprintf(msg, "Job [%d] (%d) stopped by signal 20", fgjid, pid);
-        // puts(msg);
-    }
     return;
 }
 
@@ -420,6 +396,3 @@ void sigquit_handler(int sig)
        exit(-999);
     exit(1);
 }
-
-
-
