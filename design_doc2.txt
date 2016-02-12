@@ -1,11 +1,11 @@
 ################
 YOUR INFO
 ################
-Name1: Charles Gong
-EID1: hcg359
-CS login: hcgong@cs.utexas.edu
-Email: gch_charles@yahoo.com
-Unique Number: 51085
+Name1: Manasa Tipparam
+EID1: mt32855
+CS login: manasa@cs.utexas.edu 
+Email: manasa.tipparam@gmail.com
+Unique Number: 51080
 
 Slip days used:
 
@@ -15,10 +15,10 @@ Slip days used:
 YOUR PARTNER'S INFO
 ################
 Name1: Manasa Tipparam
-EID1: mt32855
-CS login: manasa@cs.utexas.edu
-Email: manasa.tipparam@gmail.com
-Unique Number: 51080
+EID1: hcg359
+CS login: hcgong@cs.utexas.edu
+Email: gch_charles@yahoo.com
+Unique Number: 51085
 
 Your partner's ranking (scale below):
 
@@ -63,7 +63,26 @@ Questions regarding Part 0
   the processes beginning with 0 (the original process) and incrementing for
   each child process.
 
+  14 child processes are created when doFib() begins with an input of 5.
+  Return values for each child process:
+  #1 3
+  #2 2
+  #3 2
+  #4 1
+  #5 1
+  #6 1
+  #7 1
+  #8 1
+  #9 1
+  #10 1
+  #11 1
+  #12 0
+  #13 0
+  #14 0
+
 (2) In part 0.3, which flavor of exec did you choose to use?  Why?
+
+We used execve because we wanted to pass an array of characters (the command line argument) as a parameter instead of a single variable or file.
 
 
 ################
@@ -71,6 +90,8 @@ Questions regarding Part 1
 ################
 (1) In the provided utility function Signal(), what does the call to
   sigaction() do?  Why was sigaction() used instead of signal()?
+
+  The call to sigaction allows us to specify custom actions to signals. We used sigaction() instead of signal() because otherwise, it won't restart system calls when interrupted by a signal.
 
 (2) What is the last assembly language instruction executed by the
   signal handler function that you write?  (You may choose either signal
@@ -85,6 +106,8 @@ Questions regarding Part 1
   the registers from the interrupted thread to exactly their values
   before the signal occurred. How is this done?
 
+  A stack frame is created containing the registers before the signal handler is called.When the process executes the signal handler, the stack pointer is set to the new stack frame. This is how it restores all of the registers from the interrupted thread.
+
 
 ################
 Questions regarding Part 2
@@ -93,5 +116,6 @@ Questions regarding Part 2
   You can also use a single signal handler to catch all three signals.  Is
   there a design advantage of one over the other?  Explain your answer.
 
+  By having three separate signal handlers, we can avoid having multiple interruptions from multiple signals at the same time. We can also choose which process to send the signal to. Having multiple signal handlers allow us to more easily customize the way we deal with each of the signals. 
 
 

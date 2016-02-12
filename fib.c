@@ -61,6 +61,8 @@ int main(int argc, char **argv)
  * NOTE: The solution must be recursive and it must fork
  * a new child for each call. Each process should call
  * doFib() exactly once.
+ * 
+ * Fib 5 creates 14 child processes
  */
 static void 
 doFib(int n, int doPrint)
@@ -70,34 +72,49 @@ doFib(int n, int doPrint)
 
   // Charles drove here
   if(n == 0) {
+    
     if(doPrint == 1)
       printf("0\n");
     exit(0);
   }
   else if(n == 1) {
+    
     if(doPrint == 1)
       printf("1\n");
     exit(1);
   }
   else {
     child1 = fork();
-    if(child1 == 0) // child process
+    
+
+    if(child1 == 0){ // child process
+      //printf("PID: %d, fork child1 \n", getpid());
       doFib(n-1, 0);
+    }
     else {
+      
 	    child2 = fork();
-      if(child2 == 0) // child process
+      if(child2 == 0){ // child process
+        //printf("PID: %d, fork child2 \n", getpid());
         doFib(n-2, 0);
+      }
     }
     // Charles stopped driving, Manasa starts driving
     if((retpid = waitpid(child1, &status1, 0)) > 0)
-      if(WIFEXITED(status1))
+      if(WIFEXITED(status1)) {
+        //printf("PID: %d, Return %d\n", child1, WEXITSTATUS(status1));
         if((retpid = waitpid(child2, &status2, 0)) > 0)
           if(WIFEXITED(status2)) {
+            //printf("PID: %d, Return %d\n", child2, WEXITSTATUS(status2));
             result += (WEXITSTATUS(status1) + WEXITSTATUS(status2));
+            
             if(doPrint == 1)
               printf("%d\n", result);
             exit(result);
           }
+           
+      }
   }
+
   // Manasa stopped driving
 }

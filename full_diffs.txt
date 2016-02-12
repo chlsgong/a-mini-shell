@@ -1,169 +1,144 @@
 YOUR RUN ON LEFT, REFERENCE RUN ON RIGHT
-DIFFS FOR TRACE #01:
-		#							      <
-		# trace01.txt - Properly terminate on EOF.		      <
-		#							      <
--------------------------------------------
-DIFFS FOR TRACE #02:
-		#							      <
-		# trace02.txt - Process builtin quit command.		      <
-		#							      <
--------------------------------------------
-DIFFS FOR TRACE #03:
-		#							      <
-		# trace03.txt - Run a foreground job.			      <
-		#							      <
-		msh> quit						      <
--------------------------------------------
-DIFFS FOR TRACE #04:
-		#							      <
-		# trace04.txt - Run a background job.			      <
-		#							      <
-		msh> ./myspin 1 &					      <
-		[1] (pid) ./myspin 1 &					      <
--------------------------------------------
-DIFFS FOR TRACE #05:
-		#							      <
-		# trace05.txt - Process jobs builtin command.		      <
-		#							      <
-		msh> ./myspin 2 &					      <
-		[1] (pid) ./myspin 2 &					      <
-		msh> ./myspin 3 &					      <
-		[2] (pid) ./myspin 3 &					      <
-		msh> jobs						      <
-		[1] (pid) Running ./myspin 2 &				      <
-		[2] (pid) Running ./myspin 3 &				      <
--------------------------------------------
 DIFFS FOR TRACE #06:
-		#							      <
-		# trace06.txt - Forward SIGINT to foreground job.	      <
-		#							      <
-		msh> ./myspin 4						      <
-		Job [1] (pid) terminated by signal 2			      <
+		#								#
+		# trace06.txt - Forward SIGINT to foreground job.		# trace06.txt - Forward SIGINT to foreground job.
+		#								#
+		msh> ./myspin 4							msh> ./myspin 4
+		Job [1] (pid) terminated by signal 2				Job [1] (pid) terminated by signal 2
+									      <
 -------------------------------------------
 DIFFS FOR TRACE #07:
-		#							      <
-		# trace07.txt - Forward SIGINT only to foreground job.	      <
-		#							      <
-		msh> ./myspin 4 &					      <
-		[1] (pid) ./myspin 4 &					      <
-		msh> ./myspin 5						      <
-		Job [2] (pid) terminated by signal 2			      <
-		msh> jobs						      <
-		[1] (pid) Running ./myspin 4 &				      <
+		#								#
+		# trace07.txt - Forward SIGINT only to foreground job.		# trace07.txt - Forward SIGINT only to foreground job.
+		#								#
+		msh> ./myspin 4 &						msh> ./myspin 4 &
+		[1] (pid) ./myspin 4 &						[1] (pid) ./myspin 4 &
+		msh> ./myspin 5							msh> ./myspin 5
+		Job [2] (pid) terminated by signal 2				Job [2] (pid) terminated by signal 2
+									      <
+		msh> jobs							msh> jobs
+		[1] (pid) Running ./myspin 4 &					[1] (pid) Running ./myspin 4 &
 -------------------------------------------
 DIFFS FOR TRACE #08:
-		#							      <
-		# trace08.txt - Forward SIGTSTP only to foreground job.	      <
-		#							      <
-		msh> ./myspin 4 &					      <
-		[1] (pid) ./myspin 4 &					      <
-		msh> ./myspin 5						      <
-		Job [2] (pid) stopped by signal 20			      <
-		msh> jobs						      <
-		[1] (pid) Running ./myspin 4 &				      <
-		[2] (pid) Stopped ./myspin 5 				      <
+		#								#
+		# trace08.txt - Forward SIGTSTP only to foreground job.		# trace08.txt - Forward SIGTSTP only to foreground job.
+		#								#
+		msh> ./myspin 4 &						msh> ./myspin 4 &
+		[1] (pid) ./myspin 4 &						[1] (pid) ./myspin 4 &
+		msh> ./myspin 5							msh> ./myspin 5
+		Job [2] (pid) stopped by signal 20				Job [2] (pid) stopped by signal 20
+									      <
+		msh> jobs							msh> jobs
+		[1] (pid) Running ./myspin 4 &					[1] (pid) Running ./myspin 4 &
+		[2] (pid) Stopped ./myspin 5 					[2] (pid) Stopped ./myspin 5 
 -------------------------------------------
 DIFFS FOR TRACE #09:
-		#							      <
-		# trace09.txt - Process bg builtin command		      <
-		#							      <
-		msh> ./myspin 4 &					      <
-		[1] (pid) ./myspin 4 &					      <
-		msh> ./myspin 5						      <
-		Job [2] (pid) stopped by signal 20			      <
-		msh> jobs						      <
-		[1] (pid) Running ./myspin 4 &				      <
-		[2] (pid) Stopped ./myspin 5 				      <
-		msh> bg %2						      <
-		[2] (pid) ./myspin 5 					      <
-		msh> jobs						      <
-		[1] (pid) Running ./myspin 4 &				      <
-		[2] (pid) Running ./myspin 5 				      <
+		#								#
+		# trace09.txt - Process bg builtin command			# trace09.txt - Process bg builtin command
+		#								#
+		msh> ./myspin 4 &						msh> ./myspin 4 &
+		[1] (pid) ./myspin 4 &						[1] (pid) ./myspin 4 &
+		msh> ./myspin 5							msh> ./myspin 5
+		Job [2] (pid) stopped by signal 20				Job [2] (pid) stopped by signal 20
+									      <
+		msh> jobs							msh> jobs
+		[1] (pid) Running ./myspin 4 &					[1] (pid) Running ./myspin 4 &
+		[2] (pid) Stopped ./myspin 5 					[2] (pid) Stopped ./myspin 5 
+		msh> bg %2							msh> bg %2
+		[2] (pid) ./myspin 5 						[2] (pid) ./myspin 5 
+		msh> jobs							msh> jobs
+		[1] (pid) Running ./myspin 4 &					[1] (pid) Running ./myspin 4 &
+		[2] (pid) Running ./myspin 5 					[2] (pid) Running ./myspin 5 
 -------------------------------------------
 DIFFS FOR TRACE #10:
-		#							      <
-		# trace10.txt - Process fg builtin command. 		      <
-		#							      <
-		msh> ./myspin 4 &					      <
-		[1] (pid) ./myspin 4 &					      <
-		msh> fg %1						      <
-		Job [1] (pid) stopped by signal 20			      <
-		msh> jobs						      <
-		[1] (pid) Stopped ./myspin 4 &				      <
-		msh> fg %1						      <
-		msh> jobs						      <
+		#								#
+		# trace10.txt - Process fg builtin command. 			# trace10.txt - Process fg builtin command. 
+		#								#
+		msh> ./myspin 4 &						msh> ./myspin 4 &
+		[1] (pid) ./myspin 4 &						[1] (pid) ./myspin 4 &
+		msh> fg %1							msh> fg %1
+		Job [1] (pid) stopped by signal 20				Job [1] (pid) stopped by signal 20
+									      <
+		msh> jobs							msh> jobs
+		[1] (pid) Stopped ./myspin 4 &					[1] (pid) Stopped ./myspin 4 &
+		msh> fg %1							msh> fg %1
+		msh> jobs							msh> jobs
 -------------------------------------------
 DIFFS FOR TRACE #14:
-		#							      <
-		# trace14.txt - Simple error handling			      <
-		#							      <
-		msh> ./bogus						      <
-		./bogus: Command not found				      <
-		msh> ./myspin 4 &					      <
-		[1] (pid) ./myspin 4 &					      <
-		msh> fg							      <
-		fg command requires PID or %jobid argument		      <
-		msh> bg							      <
-		bg command requires PID or %jobid argument		      <
-		msh> fg a						      <
-		fg: argument must be a PID or %jobid			      <
-		msh> bg a						      <
-		bg: argument must be a PID or %jobid			      <
-		msh> fg 9999999						      <
-		(pid): No such process					      <
-		msh> bg 9999999						      <
-		(pid): No such process					      <
-		msh> fg %2						      <
-		%2: No such job						      <
-		msh> fg %1						      <
-		Job [1] (pid) stopped by signal 20			      <
-		msh> bg %2						      <
-		%2: No such job						      <
-		msh> bg %1						      <
-		[1] (pid) ./myspin 4 &					      <
-		msh> jobs						      <
-		[1] (pid) Running ./myspin 4 &				      <
+		#								#
+		# trace14.txt - Simple error handling				# trace14.txt - Simple error handling
+		#								#
+		msh> ./bogus							msh> ./bogus
+		./bogus: Command not found					./bogus: Command not found
+		msh> ./myspin 4 &						msh> ./myspin 4 &
+		[1] (pid) ./myspin 4 &						[1] (pid) ./myspin 4 &
+		msh> fg								msh> fg
+		fg command requires PID or %jobid argument			fg command requires PID or %jobid argument
+		msh> bg								msh> bg
+		bg command requires PID or %jobid argument			bg command requires PID or %jobid argument
+		msh> fg a							msh> fg a
+		fg: argument must be a PID or %jobid				fg: argument must be a PID or %jobid
+		msh> bg a							msh> bg a
+		bg: argument must be a PID or %jobid				bg: argument must be a PID or %jobid
+		msh> fg 9999999							msh> fg 9999999
+		(pid): No such process						(pid): No such process
+		msh> bg 9999999							msh> bg 9999999
+		(pid): No such process						(pid): No such process
+		msh> fg %2							msh> fg %2
+		%2: No such job							%2: No such job
+		msh> fg %1							msh> fg %1
+		Job [1] (pid) stopped by signal 20				Job [1] (pid) stopped by signal 20
+									      <
+		msh> bg %2							msh> bg %2
+		%2: No such job							%2: No such job
+		msh> bg %1							msh> bg %1
+		[1] (pid) ./myspin 4 &						[1] (pid) ./myspin 4 &
+		msh> jobs							msh> jobs
+		[1] (pid) Running ./myspin 4 &					[1] (pid) Running ./myspin 4 &
 -------------------------------------------
 DIFFS FOR TRACE #15:
-		#							      <
-		# trace15.txt - Putting it all together			      <
-		#							      <
-		msh> ./bogus						      <
-		./bogus: Command not found				      <
-		msh> ./myspin 10					      <
-		Job [1] (pid) terminated by signal 2			      <
-		msh> ./myspin 3 &					      <
-		[1] (pid) ./myspin 3 &					      <
-		msh> ./myspin 4 &					      <
-		[2] (pid) ./myspin 4 &					      <
-		msh> jobs						      <
-		[1] (pid) Running ./myspin 3 &				      <
-		[2] (pid) Running ./myspin 4 &				      <
-		msh> fg %1						      <
-		Job [1] (pid) stopped by signal 20			      <
-		msh> jobs						      <
-		[1] (pid) Stopped ./myspin 3 &				      <
-		[2] (pid) Running ./myspin 4 &				      <
-		msh> bg %3						      <
-		%3: No such job						      <
-		msh> bg %1						      <
-		[1] (pid) ./myspin 3 &					      <
-		msh> jobs						      <
-		[1] (pid) Running ./myspin 3 &				      <
-		[2] (pid) Running ./myspin 4 &				      <
-		msh> fg %1						      <
-		msh> quit						      <
+		#								#
+		# trace15.txt - Putting it all together				# trace15.txt - Putting it all together
+		#								#
+		msh> ./bogus							msh> ./bogus
+		./bogus: Command not found					./bogus: Command not found
+		msh> ./myspin 10						msh> ./myspin 10
+		Job [1] (pid) terminated by signal 2				Job [1] (pid) terminated by signal 2
+									      <
+		msh> ./myspin 3 &						msh> ./myspin 3 &
+		[1] (pid) ./myspin 3 &						[1] (pid) ./myspin 3 &
+		msh> ./myspin 4 &						msh> ./myspin 4 &
+		[2] (pid) ./myspin 4 &						[2] (pid) ./myspin 4 &
+		msh> jobs							msh> jobs
+		[1] (pid) Running ./myspin 3 &					[1] (pid) Running ./myspin 3 &
+		[2] (pid) Running ./myspin 4 &					[2] (pid) Running ./myspin 4 &
+		msh> fg %1							msh> fg %1
+		Job [1] (pid) stopped by signal 20				Job [1] (pid) stopped by signal 20
+									      <
+		msh> jobs							msh> jobs
+		[1] (pid) Stopped ./myspin 3 &					[1] (pid) Stopped ./myspin 3 &
+		[2] (pid) Running ./myspin 4 &					[2] (pid) Running ./myspin 4 &
+		msh> bg %3							msh> bg %3
+		%3: No such job							%3: No such job
+		msh> bg %1							msh> bg %1
+		[1] (pid) ./myspin 3 &						[1] (pid) ./myspin 3 &
+		msh> jobs							msh> jobs
+		[1] (pid) Running ./myspin 3 &					[1] (pid) Running ./myspin 3 &
+		[2] (pid) Running ./myspin 4 &					[2] (pid) Running ./myspin 4 &
+		msh> fg %1							msh> fg %1
+		msh> quit							msh> quit
 -------------------------------------------
 DIFFS FOR TRACE #16:
-		#							      <
-		# trace16.txt - Tests whether the shell can handle SIGTSTP an <
-		#     signals that come from other processes instead of the t <
-		#							      <
-		msh> ./mystop 2						      <
-		Job [1] (pid) stopped by signal 20			      <
-		msh> jobs						      <
-		[1] (pid) Stopped ./mystop 2				      <
-		msh> ./myint 2						      <
-		Job [2] (pid) terminated by signal 2			      <
+		#								#
+		# trace16.txt - Tests whether the shell can handle SIGTSTP an	# trace16.txt - Tests whether the shell can handle SIGTSTP an
+		#     signals that come from other processes instead of the t	#     signals that come from other processes instead of the t
+		#								#
+		msh> ./mystop 2							msh> ./mystop 2
+		Job [1] (pid) stopped by signal 20				Job [1] (pid) stopped by signal 20
+									      <
+		msh> jobs							msh> jobs
+		[1] (pid) Stopped ./mystop 2					[1] (pid) Stopped ./mystop 2
+		msh> ./myint 2							msh> ./myint 2
+		Job [2] (pid) terminated by signal 2				Job [2] (pid) terminated by signal 2
+									      <
 -------------------------------------------

@@ -331,14 +331,14 @@ void sigchld_handler(int sig)
         if(status >= 0) {
             if(WIFSTOPPED(status)) {
                 jid = pid2jid(jobs, pid);
-                sprintf(msg, "Job [%d] (%d) stopped by signal %d \n", jid, pid, SIGTSTP);
+                sprintf(msg, "Job [%d] (%d) stopped by signal %d\n", jid, pid, SIGTSTP);
                 puts(msg);
                 job = getjobpid(jobs, pid);
                 job->state = ST;
             }
             else if(WIFSIGNALED(status)) {  
                 jid = pid2jid(jobs, pid);
-                sprintf(msg, "Job [%d] (%d) terminated by signal %d \n", jid, pid, SIGINT);
+                sprintf(msg, "Job [%d] (%d) terminated by signal %d\n", jid, pid, SIGINT);
                 puts(msg);
                 deletejob(jobs, pid);
             }
@@ -365,7 +365,7 @@ void sigint_handler(int sig)
 {
     pid_t pid;
     if((pid = fgpid(jobs)) > 0)
-        kill(-pid, SIGINT); // terminated job
+        kill(-pid, SIGKILL); // terminated job
     return;
 }
 
