@@ -134,7 +134,7 @@ void eval(char *cmdline)
 	pid_t child;
     sigset_t mask;
     char* argv[MAXARGS];
-    int bg, jid, builtin;
+    int bg, jid, builtin, addJob;
 
     sigemptyset(&mask);
     sigaddset(&mask, SIGCHLD);
@@ -151,6 +151,7 @@ void eval(char *cmdline)
     if(builtin)
         sigprocmask(SIG_UNBLOCK, &mask, NULL);
     else { // not a built in command
+        printf("Process forks here.\n");
         child = fork();
         if(child == 0) { // child process
             setpgid(0, 0);
@@ -162,12 +163,20 @@ void eval(char *cmdline)
         }
         // parent process
         if(bg == 0) { // if a foreground job, wait for child process to finish
-            addjob(jobs, child, FG, cmdline);
+            addJob = addjob(jobs, child, FG, cmdline);
+	    if (!addJob) {
+	         unix_error("add job error. \n");
+	         exit(-1);
+	    }	
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
             waitfg(child);
         }
         else { // if a background job
-            addjob(jobs, child, BG, cmdline);
+            addJob = addjob(jobs, child, BG, cmdline);
+	    if (!addJob) {
+	         unix_error("add job error. \n");
+		 exit (-1);
+	    }
             jid = pid2jid(jobs, child); // get job from pid then prints it
             printf("[%d] (%d) %s", jid, child, cmdline);
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
@@ -335,8 +344,10 @@ void sigchld_handler(int sig)
     }
     if(errno == EINTR) // if handler interrupted restart handler
         sigchld_handler(sig);
-    else if(errno != ECHILD && pid != 0)
+    else if(errno != ECHILD && pid != 0) {
         unix_error("waitpid error");
+        exit(-1);
+    }
     return;
 }
 
