@@ -4,6 +4,9 @@
  * <Put your name and login ID here>
  * Charles Gong
  * hcg359
+ * 
+ * Manasa Tipparam
+ * mt32855
  */
 #include <stdio.h>
 #include <stdlib.h>
