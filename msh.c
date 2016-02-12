@@ -7,7 +7,9 @@
  * 
  * Manasa Tipparam
  * mt32855
+ *
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -128,6 +130,7 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) 
 {
+   //Charles is driving
 	pid_t child;
     sigset_t mask;
     char* argv[MAXARGS];
@@ -138,8 +141,9 @@ void eval(char *cmdline)
     sigaddset(&mask, SIGTSTP);
     sigaddset(&mask, SIGINT);
     sigprocmask(SIG_BLOCK, &mask, NULL);
-
-    if(cmdline[0] == '\n')
+    
+    //Manasa is driving
+    if(cmdline[0] == '\n') // Check if no cmdline args (enter key)
         return;
 
     bg = parseline(cmdline, argv);
@@ -193,14 +197,13 @@ int builtin_cmd(char **argv)
     if(strcmp(argv[0], quit) == 0) { // quit command
         exit(0);
     }
-    if(strcmp(argv[0], bg) == 0) { // restart as backgroudn process
+
+    // restart as background or foreground process
+    if(strcmp(argv[0], bg) == 0 || strcmp(argv[0], fg) == 0) {
         do_bgfg(argv);
         return 1;
     }
-    if(strcmp(argv[0], fg) == 0) { // restart as foreground process
-        do_bgfg(argv);
-        return 1;
-    }
+   
     return 0;     /* not a builtin command */
 }
 
@@ -222,8 +225,8 @@ void do_bgfg(char **argv)
     arg2 = argv[1];
 
     if(arg2[0] == '%') { // if jid is passed in
-        while(arg2[++count]) { // check if arg is valid
-            byte = arg2[count];
+        while(arg2[++count]) { // check if arg is valid (must be numeric)
+            byte = arg2[count]; // byte = char at 'count'
             if(!isdigit(byte)) {
                 fprintf(stderr, "%s: argument must be a PID or %%jobid\n", argv[0]);
                 return;
@@ -238,15 +241,15 @@ void do_bgfg(char **argv)
         pid = job->pid;
     }
     else { // else if pid is passed in
-        while(arg2[count++]) { // check if arg is valid
+        while(arg2[count++]) { // check if arg is valid (must be numeric)
             byte = arg2[count-1];
             if(!isdigit(byte)) {
                 fprintf(stderr, "%s: argument must be a PID or %%jobid\n", argv[0]);
                 return;
-            }
+             }
         }
-        pid = atoi(arg2);
-        if(!(jid = pid2jid(jobs, pid))) {
+        pid = atoi(arg2); 
+        if(!(jid = pid2jid(jobs, pid))) { 
             fprintf(stderr, "(%d): No such process\n", pid);
             return;
         }
@@ -314,14 +317,14 @@ void sigchld_handler(int sig)
         if(status >= 0) {
             if(WIFSTOPPED(status)) {
                 jid = pid2jid(jobs, pid);
-                sprintf(msg, "Job [%d] (%d) stopped by signal 20", jid, pid);
+                sprintf(msg, "Job [%d] (%d) stopped by signal %d \n", jid, pid, SIGTSTP);
                 puts(msg);
                 job = getjobpid(jobs, pid);
                 job->state = ST;
             }
             else if(WIFSIGNALED(status)) {  
                 jid = pid2jid(jobs, pid);
-                sprintf(msg, "Job [%d] (%d) terminated by signal 2", jid, pid);
+                sprintf(msg, "Job [%d] (%d) terminated by signal %d \n", jid, pid, SIGINT);
                 puts(msg);
                 deletejob(jobs, pid);
             }
@@ -346,7 +349,7 @@ void sigint_handler(int sig)
 {
     pid_t pid;
     if((pid = fgpid(jobs)) > 0)
-        kill(-pid, SIGKILL); // terminated job
+        kill(-pid, SIGINT); // terminated job
     return;
 }
 
