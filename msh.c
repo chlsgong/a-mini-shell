@@ -142,7 +142,7 @@ void eval(char *cmdline)
     sigaddset(&mask, SIGINT);
     sigprocmask(SIG_BLOCK, &mask, NULL);
     
-    //Manasa is driving
+    //Manasa is redriving
     if(cmdline[0] == '\n') // Check if no cmdline args (enter key)
         return;
 
@@ -151,7 +151,7 @@ void eval(char *cmdline)
     if(builtin)
         sigprocmask(SIG_UNBLOCK, &mask, NULL);
     else { // not a built in command
-        printf("Process forks here.\n");
+        //printf("Process forks here.\n");
         child = fork();
         if(child == 0) { // child process
             setpgid(0, 0);
@@ -194,7 +194,10 @@ void eval(char *cmdline)
  */
 int builtin_cmd(char **argv) 
 {
-	char* quit = "quit";
+    //Manasa is driving 
+   
+    char* quit = "quit";
+    char* quitQ = "q";
     char* jobsCmd = "jobs";
     char* bg = "bg";
     char* fg = "fg";
@@ -203,7 +206,7 @@ int builtin_cmd(char **argv)
         listjobs(jobs);
         return 1;
     }
-    if(strcmp(argv[0], quit) == 0) { // quit command
+    if(strcmp(argv[0], quit) == 0|| strcmp(argv[0], quitQ) == 0) { // quit command
         exit(0);
     }
 
@@ -220,7 +223,9 @@ int builtin_cmd(char **argv)
  * do_bgfg - Execute the builtin bg and fg commands
  */
 void do_bgfg(char **argv) 
-{   
+{  
+    //Charles is driving 
+ 
     pid_t pid;
     struct job_t* job;
     char* arg2;
@@ -290,9 +295,9 @@ void waitfg(pid_t pid)
     sigset_t waitMask;
     sigemptyset(&waitMask);
     sigaddset(&waitMask, SIGCHLD);
-    sigprocmask(SIG_BLOCK, &waitMask, NULL);
+    sigprocmask(SIG_BLOCK, &waitMask, NULL);//block all signals
 
-    while(fgpid(jobs) == pid) {
+    while(fgpid(jobs) == pid) { // while process = FG, block
         sigdelset(&waitMask, SIGCHLD);
         sigsuspend(&waitMask);
         sigaddset(&waitMask, SIGCHLD);
