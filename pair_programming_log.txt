@@ -1,8 +1,25 @@
 Format: Date, Time, Names, Hours
 		Drive Order, Time Length
 
-Log:	1/29/16; 4:05; Charles, Manasa;
+Log:	1/28/16; 4:05; Charles, Manasa, 1 hour 10 mins;
 		Charles, 40 minutes
-		Manasa, 30 min
-		Charles, 30 min
-		Manasa, 30 min
+		Manasa, 30 minutes
+
+	 	1/30/16; 5:21; Charles, Manasa, 2 hours;
+		Manasa, 30 minutes
+		Charles, 30 minutes
+		Charles and Manasa, 60 minutes
+
+		2/4/16; 3:00; Charles, Manasa, 1 hour 40 mins;
+		Manasa, 30 minutes
+		Charles, 40 minutes
+		Manasa, 30 minutes
+
+		2/7/16; 4:14; Charles, Manasa, 4 hours;
+		Manasa, 30 minutes
+		Charles, 30 minutes
+		Manasa, 30 minutes
+		Manasa and Charles, 60 minutes
+		Charles, 30 minutes
+		Manasa, 30 minutes
+		Charles, 30 minutes

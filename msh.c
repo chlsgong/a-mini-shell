@@ -2,9 +2,19 @@
  * msh - A mini shell program with job control
  * 
  * <Put your name and login ID here>
+ * Manasa Tipparam
+ * mt32855
+ *
  * Charles Gong
  * hcg359
+ * 
+ * 2/7/16
+ * A mini shell that executes a few commands or executes another program. Continually loops until a
+ * kill signal is sent to the shell. Handles bad commands and invalid programs. Allows programs to be
+ * run as background or foreground process. Adds the processes to a jobs list that can display the states
+ * of such processes. Can also handle the stopping or termination of processes with SIGINT or SIGTSTP.
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -124,7 +134,8 @@ int main(int argc, char **argv)
  * when we type ctrl-c (ctrl-z) at the keyboard.  
 */
 void eval(char *cmdline) 
-{
+{ 
+    // Manasa started driving
 	pid_t child;
     sigset_t mask;
     char* argv[MAXARGS];
@@ -139,7 +150,7 @@ void eval(char *cmdline)
     if(cmdline[0] == '\n')
         return;
 
-    bg = parseline(cmdline, argv);
+    bg = parseline(cmdline, argv); // Manasa stopped driving, Charles started driving
     builtin = builtin_cmd(argv);
     if(builtin)
         sigprocmask(SIG_UNBLOCK, &mask, NULL);
@@ -166,7 +177,7 @@ void eval(char *cmdline)
             sigprocmask(SIG_UNBLOCK, &mask, NULL);
         }
     }
-    return;
+    return; // Charles stopped driving
 }
 
 
@@ -178,6 +189,7 @@ void eval(char *cmdline)
  */
 int builtin_cmd(char **argv) 
 {
+    // Manasa started driving
 	char* quit = "quit";
     char* jobsCmd = "jobs";
     char* bg = "bg";
@@ -199,6 +211,7 @@ int builtin_cmd(char **argv)
         return 1;
     }
     return 0;     /* not a builtin command */
+    // Manasa stopped driving
 }
 
 /* 
@@ -206,6 +219,7 @@ int builtin_cmd(char **argv)
  */
 void do_bgfg(char **argv) 
 {   
+    // Charles and Manasa drove
     pid_t pid;
     struct job_t* job;
     char* arg2;
@@ -265,6 +279,7 @@ void do_bgfg(char **argv)
         }
     }
     return;
+    // stopped driving
 }
 
 /* 
@@ -272,6 +287,7 @@ void do_bgfg(char **argv)
  */
 void waitfg(pid_t pid)
 {   
+    // Charles drove
     sigset_t waitMask;
     sigemptyset(&waitMask);
     sigaddset(&waitMask, SIGCHLD);
@@ -284,6 +300,7 @@ void waitfg(pid_t pid)
     }
     sigprocmask(SIG_UNBLOCK, &waitMask, NULL);
     return;
+    // Charles stopped driving
 }
 
 /*****************
@@ -299,6 +316,7 @@ void waitfg(pid_t pid)
  */
 void sigchld_handler(int sig) 
 {   
+    // Manasa started driving
     pid_t pid;
     struct job_t* job;
     int status, jid;
@@ -326,12 +344,12 @@ void sigchld_handler(int sig)
                 deletejob(jobs, pid);
             }
         }
-    }
+    } // Manasa stopped driving, Charles started driving
     if(errno == EINTR) // if handler interrupted restart handler
         sigchld_handler(sig);
     else if(errno != ECHILD && pid != 0)
         unix_error("waitpid error");
-    return;
+    return; // Charles stopped driving
 }
 
 /* 
@@ -341,10 +359,12 @@ void sigchld_handler(int sig)
  */
 void sigint_handler(int sig) 
 {
+    // Charles drove
     pid_t pid;
     if((pid = fgpid(jobs)) > 0)
         kill(-pid, SIGKILL); // terminated job
     return;
+    // Charles stopped driving
 }
 
 /*
@@ -354,11 +374,12 @@ void sigint_handler(int sig)
  */
 void sigtstp_handler(int sig) 
 {
+    // Charles drove
     pid_t pid;
-
     if((pid = fgpid(jobs)) > 0)
         kill(-pid, SIGTSTP); // stops job
     return;
+    // Charles stopped driving 
 }
 
 /*********************

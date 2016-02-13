@@ -7,7 +7,12 @@
  *
  * Charles Gong
  * hcg359
+ * 
+ * 2/4/16
+ * A mini shell that executes a few commands or executes another program. Continually loops until a
+ * kill signal is sent to the shell. Handles bad commands and invalid programs.
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -110,6 +115,7 @@ int main(int argc, char **argv)
 */
 void eval(char *cmdline) // page 735, Computer Systems by Bryant O'Hallaron
 {
+    // Manasa drove here
     pid_t child;
     char* argv[MAXARGS];
     int bg, status;
@@ -118,7 +124,7 @@ void eval(char *cmdline) // page 735, Computer Systems by Bryant O'Hallaron
 
     if(builtin_cmd(argv) == 0) {
         child = fork();
-        if(child == 0) {
+        if(child == 0) { // Manasa stopped driving, Charles started driving
             if(execve(argv[0], argv, environ) < 0) {
                 printf("Command not found: %s.\n", argv[0]);
                 exit(0);
@@ -131,7 +137,7 @@ void eval(char *cmdline) // page 735, Computer Systems by Bryant O'Hallaron
         else
             printf("%d %s", child, cmdline);
     }
-    return;
+    return; // Charles stopped driving
 }
 
 
@@ -143,6 +149,7 @@ void eval(char *cmdline) // page 735, Computer Systems by Bryant O'Hallaron
  */
 int builtin_cmd(char **argv) // page 735, Computer Systems by Bryant O'Hallaron 
 {   
+    // Manasa drove
     char* quit = "quit";
     
     if(strcmp(argv[0], quit) == 0) { // quit command
@@ -150,6 +157,7 @@ int builtin_cmd(char **argv) // page 735, Computer Systems by Bryant O'Hallaron
         return 1;
     }
     return 0;     /* not a builtin command */
+    // Manasa stopped driving
 }
 
 

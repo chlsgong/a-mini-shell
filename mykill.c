@@ -1,3 +1,8 @@
+/* Charles Gong, Manasa Tipparam
+ * 1/30/16
+ * Takes a process ID and S=sends a SIGUSR1 to that process.
+ */
+
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
@@ -10,6 +15,7 @@
 
 int main(int argc, char **argv)
 {
+  // Charles and Manasa drove
   int arg;
 
   if(argc != 2){
@@ -26,4 +32,5 @@ int main(int argc, char **argv)
 	kill(arg, SIGUSR1);
   }
   return 0;
+  // stopped driving
 }

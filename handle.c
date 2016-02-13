@@ -1,3 +1,10 @@
+/* Charles Gong, Manasa Tipparam
+ * 1/30/16
+ * Repeatedly prints until a kill signal is sent from another process.
+ * Handles the ctrl-c event by not exiting the process.
+ * Handles the SIGUSR1 signal by exiting the process.
+ */
+
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
@@ -13,6 +20,7 @@
  */
 void sig_handler(int sig) 
 {
+	// Manasa started driving
     ssize_t bytes; 
     const int STDOUT = 1; 
     if(sig == 10) {
@@ -27,7 +35,7 @@ void sig_handler(int sig)
        		exit(-999);
        	}
 	}
-    
+    // Manasa stopped driving
 }
 
 /*
@@ -41,6 +49,7 @@ void sig_handler(int sig)
  */
 int main(int argc, char **argv)
 {	
+	// Charles started driving
 	struct timespec req, remain, remain2;
 	pid_t pid = getpid();
 
@@ -56,4 +65,5 @@ int main(int argc, char **argv)
 		}
 	}
   	return 0;
+  	// Charles stopped driving
 }
