@@ -14,13 +14,13 @@ Slip days used:
 ################
 YOUR PARTNER'S INFO
 ################
-Name1: Manasa Tipparam
+Name1: Charles Gong
 EID1: hcg359
 CS login: hcgong@cs.utexas.edu
 Email: gch_charles@yahoo.com
 Unique Number: 51085
 
-Your partner's ranking (scale below):
+Your partner's ranking (scale below): Excellent
 
 ################
 PARTNER EVALUATION SCALE
@@ -65,24 +65,24 @@ Questions regarding Part 0
 
   14 child processes are created when doFib() begins with an input of 5.
   Return values for each child process:
-  #1 3
-  #2 2
-  #3 2
-  #4 1
-  #5 1
-  #6 1
-  #7 1
-  #8 1
-  #9 1
-  #10 1
-  #11 1
-  #12 0
-  #13 0
-  #14 0
+ Process #1: 3
+ Process #2: 2
+ Process #3: 2
+ Process #4: 1
+ Process #5: 1
+ Process #6: 1
+ Process #7: 1
+ Process #8: 1
+ Process #9: 1
+ Process #10: 1
+ Process #11: 1
+ Process #12: 0
+ Process #13: 0
+ Process #14: 0
 
 (2) In part 0.3, which flavor of exec did you choose to use?  Why?
 
-We used execve because we wanted to pass an array of characters (the command line argument) as a parameter instead of a single variable or file.
+We used 'execve' because we wanted to pass the command line arguments as an array of characters as the parameter instead of a single variable, file, or list of items.
 
 
 ################
